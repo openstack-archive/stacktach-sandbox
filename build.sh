@@ -33,3 +33,5 @@ do
     python setup.py install
     cd ../..
 done
+
+screen -c screenrc
