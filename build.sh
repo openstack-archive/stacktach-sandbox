@@ -27,6 +27,9 @@ cd ..
 
 source ./$VENV_DIR/bin/activate
 
+# Some extra required libs ...
+pip install librabbitmq
+
 for file in $SOURCE_DIR/*
 do
     cd $file

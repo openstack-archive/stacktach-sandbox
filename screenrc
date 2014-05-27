@@ -1,9 +1,7 @@
 sessionname tach
 hardstatus alwayslastline '%{= .} %-Lw%{= .}%> %n%f %t*%{= .}%+Lw%< %-=%{g}(%{d}%H/%l%{g})'
 screen -t bash bash
-screen -t gen bash
-stuff "cd git/notigen/bin; python event_pump.py
-"
+screen -t gen bash 
+stuff "cd git/notigen/bin; python event_pump.py\r"
 screen -t yagi bash
-stuff "cd git/yagi/bin; ./yagi-event --config ../../../shoebox.conf
-"
+stuff "cd git/yagi/bin; ./yagi-event --config ../../../shoebox.conf\r"
