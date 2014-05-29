@@ -34,6 +34,7 @@ pip install librabbitmq
 for file in $SOURCE_DIR/*
 do
     cd $file
+    rm -rf build dist
     python setup.py install
     cd ../..
 done
