@@ -30,9 +30,12 @@ source ./$VENV_DIR/bin/activate
 
 # Some extra required libs ...
 pip install librabbitmq
+# Needed by pyrax:
+pip install pbr
 
 for file in $SOURCE_DIR/*
 do
+    echo "----------------------- $file ------------------------------"
     cd $file
     rm -rf build dist
     python setup.py install
