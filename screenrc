@@ -5,3 +5,7 @@ screen -t gen bash
 stuff "cd git/notigen/bin; python event_pump.py\r"
 screen -t yagi bash
 stuff "cd git/yagi/bin; ./yagi-event --config ../../../shoebox.conf\r"
+screen -t quincy bash
+stuff "cd git/quincy\r"
+screen -t klugman bash
+stuff "cd git/klugman\r"
