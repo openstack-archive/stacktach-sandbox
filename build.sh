@@ -30,7 +30,10 @@ cd ..
 source ./$VENV_DIR/bin/activate
 
 # Some extra required libs ...
+pip install gunicorn
+pip install httpie
 pip install librabbitmq
+
 # Needed by pyrax:
 pip install pbr
 
