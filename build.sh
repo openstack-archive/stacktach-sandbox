@@ -21,7 +21,7 @@ cd $SOURCE_DIR
 for file in StackTach/shoebox StackTach/simport StackTach/notigen \
             StackTach/notabene StackTach/notification_utils rackerlabs/yagi \
             StackTach/stackdistiller StackTach/quincy StackTach/quince \
-            StackTach/klugman
+            StackTach/klugman StackTach/oahu
 do
     git clone https://github.com/$file
 done

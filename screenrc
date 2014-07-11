@@ -2,9 +2,11 @@ sessionname tach
 hardstatus alwayslastline '%{= .} %-Lw%{= .}%> %n%f %t*%{= .}%+Lw%< %-=%{g}(%{d}%H/%l%{g})'
 screen -t gen bash 
 stuff "cd git/notigen/bin; python event_pump.py\r"
-screen -t yagi bash
+screen -t yagi1 bash
+stuff "cd git/yagi/bin; ./yagi-event --config ../../../shoebox.conf\r"
+screen -t yagi2 bash
 stuff "cd git/yagi/bin; ./yagi-event --config ../../../shoebox.conf\r"
 screen -t quincy bash
-stuff "cd git/quincy/quincy; gunicorn --debug api:api\r"
+stuff "cd git/quincy/quincy; gunicorn --log-file=- api:api\r"
 screen -t bash bash
 stuff "klugman events -h\r"
