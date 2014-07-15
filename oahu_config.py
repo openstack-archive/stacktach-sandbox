@@ -26,3 +26,11 @@ class Config(oahu.config.Config):
 
         return driver.MongoDBSyncEngine(rules)
 
+    def get_ready_chunk_size(self):
+        return 100
+
+    def get_expiry_chunk_size(self):
+        return 1000
+
+    def get_completed_chunk_size(self):
+        return -1
