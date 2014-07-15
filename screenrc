@@ -1,7 +1,7 @@
 sessionname tach
 hardstatus alwayslastline '%{= .} %-Lw%{= .}%> %n%f %t*%{= .}%+Lw%< %-=%{g}(%{d}%H/%l%{g})'
-screen -t gen bash 
-stuff "cd git/notigen/bin; python event_pump.py\r"
+#screen -t gen bash 
+#stuff "cd git/notigen/bin; python event_pump.py\r"
 screen -t yagi1 bash
 stuff "cd git/yagi/bin; ./yagi-event --config ../../../shoebox.conf\r"
 screen -t yagi2 bash
@@ -9,12 +9,12 @@ stuff "cd git/yagi/bin; ./yagi-event --config ../../../shoebox.conf\r"
 screen -t quincy bash
 stuff "cd git/quincy/quincy; gunicorn --log-file=- api:api\r"
 screen -t expired bash
-stuff "pipeline expired --polling_rate=2\r"
+stuff "pipeline expired \".|oahu_config:Config\" --polling_rate=2\r"
 screen -t ready1 bash
-stuff "pipeline ready --polling_rate=1\r"
+stuff "pipeline ready \".|oahu_config:Config\" --polling_rate=1\r"
 screen -t ready2 bash
-stuff "pipeline ready --polling_rate=1\r"
+stuff "pipeline ready \".|oahu_config:Config\" --polling_rate=1\r"
 screen -t completed bash
-stuff "pipeline completed --polling_rate=2\r"
+stuff "pipeline completed \".|oahu_config:Config\" --polling_rate=2\r"
 screen -t bash bash
 stuff "klugman events -h\r"
