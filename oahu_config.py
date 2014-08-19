@@ -19,10 +19,10 @@ class Config(oahu.config.Config):
 
         # Trigger names have to be consistent across all workers
         # (yagi and daemons).
-        by_request = trigger_definition.TriggerDefinition("request-id",
-                                                      ["_context_request_id", ],
-                                                      criteria.Inactive(60),
-                                                      self.callback)
+#        by_request = trigger_definition.TriggerDefinition("request-id",
+#                                                      ["_context_request_id", ],
+#                                                      criteria.Inactive(3600),
+#                                                      self.callback)
 
         # This trigger requires a Trait called "when_date" which is
         # the date-only portion of the "when" trait. We will create
@@ -34,7 +34,7 @@ class Config(oahu.config.Config):
                                     'compute.instance.exists'),
                               self.callback)
 
-        triggers = [by_request, instance_usage]
+        triggers = [instance_usage, ] #[by_request, instance_usage]
 
         return driver.MongoDBDriver(triggers)
 
