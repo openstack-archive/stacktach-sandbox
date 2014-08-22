@@ -3,6 +3,18 @@ sandbox
 
 Dev env for StackTach development. Uses Notigen event generator and yagi.
 
+Prerequisites:
+    make sure you have a working python dev environment (2.7+ ideally)
+    including virtualenv. Install rabbitmq and mongodb
+
+TL;DR:
+    handle the prerequisites above.
+    git clone https://github.com/StackTach/sandbox.git
+    cd sandbox
+    ./build.sh
+
+Tweaks:    
+    
 You can create a `local.sh` to override the defaults:
 
     SOURCE_DIR=git  # where the StackTach repos are cloned
