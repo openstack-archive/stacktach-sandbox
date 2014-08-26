@@ -1,4 +1,5 @@
 import oahu.config
+from oahu import debugging
 from oahu import mongodb_driver as driver
 from oahu import trigger_definition
 from oahu import pipeline_callback
@@ -22,7 +23,8 @@ class Config(oahu.config.Config):
         by_request = trigger_definition.TriggerDefinition("request-id",
                                                       ["_context_request_id", ],
                                                       criteria.Inactive(60),
-                                                      self.callback)
+                                                      self.callback,
+                                                      debug=True)
 
         # This trigger requires a Trait called "when_date" which is
         # the date-only portion of the "when" trait. We will create
@@ -32,7 +34,8 @@ class Config(oahu.config.Config):
                               ["payload/instance_id", "audit_bucket"],
                               criteria.EndOfDayExists(
                                     'compute.instance.exists'),
-                              self.callback)
+                              self.callback, debug=True,
+                              dumper=debugging.DetailedDumper())
 
         triggers = [by_request, instance_usage]
 
