@@ -1,3 +1,5 @@
+import random
+
 import oahu.config
 from oahu import debugging
 from oahu import mongodb_driver as driver
@@ -56,9 +58,12 @@ class EodExistsCallback(pipeline_callback.PipelineCallback):
         print "EOD-Exists:", stream
         #for event in stream.events:
         #    print event['timestamp'], event['event_type']
+        if random.choice([True, False]):
+            raise Exception("Trigger Exception %d" % random.randrange(100))
 
     def commit(self, stream, scratchpad):
-        pass
+        if random.choice([True, False]):
+            raise Exception("Commit Exception %d" % random.randrange(100))
 
 
 class Config(oahu.config.Config):
