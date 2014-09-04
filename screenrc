@@ -7,7 +7,8 @@ stuff "cd git/yagi/bin; ./yagi-event --config ../../../shoebox.conf\r"
 screen -t yagi2 bash
 stuff "cd git/yagi/bin; ./yagi-event --config ../../../shoebox.conf\r"
 screen -t quincy bash
-stuff "cd git/quincy/quincy; gunicorn --log-file=- api:api\r"
+stuff "cd git/quincy/quincy; gunicorn --log-file=- 'api:get_api(config_location=\"../../../quincy.conf\")'\r"
+stuff "cd git/quincy/quincy; gunicorn --log-file=- 'api:get_api()'\r"
 screen -t expired bash
 stuff "pipeline expired \".|oahu_config:Config\" --polling_rate=20\r"
 screen -t ready1 bash
@@ -17,4 +18,4 @@ stuff "pipeline ready \".|oahu_config:Config\" --polling_rate=20\r"
 screen -t completed bash
 stuff "pipeline completed \".|oahu_config:Config\" --polling_rate=20\r"
 screen -t bash bash
-stuff "klugman events -h\r"
+stuff "klugman streams\r"
