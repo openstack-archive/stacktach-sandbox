@@ -49,8 +49,8 @@ class RequestIdCallback(pipeline_callback.PipelineCallback):
 
     def commit(self, stream, scratchpad):
         print "Req: %s %s time delta = %s" % (scratchpad['request_id'],
-                                                 scratchpad['operation'],
-                                                 scratchpad['delta'])
+                                              scratchpad['operation'],
+                                              scratchpad['delta'])
 
 
 class EodExistsCallback(pipeline_callback.PipelineCallback):
@@ -74,9 +74,9 @@ class Config(oahu.config.Config):
         # Trigger names have to be consistent across all workers
         # (yagi and daemons).
         by_request = trigger_definition.TriggerDefinition("request-id",
-                              ["_context_request_id", ],
-                              criteria.Inactive(60),
-                              [self.request_id_callback,],
+                              ["_context_request_id", ],  # Match criteria
+                              criteria.Inactive(60),  # Trigger criteria
+                              [self.request_id_callback,],  # Pipeline processing
                               debug=True)
 
         # This trigger requires a Trait called "when_date" which is
@@ -98,11 +98,11 @@ class Config(oahu.config.Config):
     def get_distiller_config(self):
         return ""
 
-    def get_ready_chunk_size(self):
+    def get_ready_chunk_size(self):  # Check for Ready streams.
         return 100
 
-    def get_expiry_chunk_size(self):
+    def get_trigger_chunk_size(self):  # Find streams ready to Trigger.
         return 1000
 
-    def get_completed_chunk_size(self):
+    def get_completed_chunk_size(self):  # Cleanup completed streams.
         return -1
