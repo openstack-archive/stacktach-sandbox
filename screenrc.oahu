@@ -6,9 +6,9 @@ stuff "cd git/quincy/quincy; gunicorn --log-file=- 'api:get_api(config_location=
 screen -t bash bash
 stuff "klugman streams\r"
 screen -t yagi1 bash
-stuff "cd git/yagi/bin; ./yagi-event --config ../../../shoebox.conf\r"
+stuff "yagi-event --config yagi.conf\r"
 screen -t yagi2 bash
-stuff "cd git/yagi/bin; ./yagi-event --config ../../../shoebox.conf\r"
+stuff "yagi-event --config yagi.conf\r"
 screen -t trigger bash
 stuff "pipeline trigger \".|oahu_config:Config\" --polling_rate=20\r"
 screen -t ready1 bash
@@ -17,6 +17,6 @@ screen -t ready2 bash
 stuff "pipeline ready \".|oahu_config:Config\" --polling_rate=20\r"
 screen -t completed bash
 stuff "pipeline completed \".|oahu_config:Config\" --polling_rate=20\r"
-screen -t gen bash 
+screen -t gen bash
 stuff "cd git/notigen/bin; python event_pump.py ../templates 2 0\r"
 
