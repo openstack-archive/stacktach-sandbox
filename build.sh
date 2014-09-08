@@ -4,6 +4,7 @@ echo "StackTach dev env build script"
 
 SOURCE_DIR=git
 VENV_DIR=.venv
+PIPELINE_ENGINE=oahu
 
 if [[ -f local.sh ]]; then
     source local.sh
@@ -21,7 +22,7 @@ cd $SOURCE_DIR
 for file in StackTach/shoebox StackTach/simport StackTach/notigen \
             StackTach/notabene StackTach/notification_utils rackerlabs/yagi \
             StackTach/stackdistiller StackTach/quincy StackTach/quince \
-            StackTach/klugman StackTach/oahu
+            StackTach/klugman StackTach/oahu StackTach/winchester
 do
     git clone https://github.com/$file
 done
@@ -46,4 +47,12 @@ do
     cd ../..
 done
 
-screen -c screenrc
+(cat yagi.conf.$PIPELINE_ENGINE ; cat yagi.conf.common ) > yagi.conf
+
+if [ $PIPELINE_ENGINE == "winchester" ]
+then
+    winchester_db -c winchester.yaml upgrade head
+fi
+
+screen -c screenrc.$PIPELINE_ENGINE
+

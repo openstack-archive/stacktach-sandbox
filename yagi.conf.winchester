@@ -1,0 +1,10 @@
+[consumer:monitor.info]
+#apps = yagi.handler.shoebox_handler.ShoeboxHandler
+apps = winchester.yagi_handler.WinchesterHandler
+exchange = monitor
+exchange_type = topic
+routing_key = monitor.info
+durable = True
+max_messages = 100
+
+
