@@ -2,7 +2,7 @@ sessionname tach
 hardstatus alwayslastline '%{= .} %-Lw%{= .}%> %n%f %t*%{= .}%+Lw%< %-=%{g}(%{d}%H/%l%{g})'
 # not yet working w/ winchester
 #screen -t quincy bash
-#stuff "cd git/quincy/quincy; gunicorn --log-file=- 'api:get_api(config_location=\"../../../quincy.conf\")'\r"
+#stuff "cd git/stacktach-quincy/quincy; gunicorn --log-file=- 'api:get_api(config_location=\"../../../quincy.conf\")'\r"
 screen -t bash bash
 #stuff "klugman streams\r"
 screen -t yagi1 bash
@@ -14,5 +14,5 @@ stuff "pipeline_worker -c winchester.yaml\r"
 screen -t pipeline2 bash
 stuff "pipeline_worker -c winchester.yaml\r"
 screen -t gen bash
-stuff "cd git/notigen/bin; python event_pump.py ../templates 2 0\r"
+stuff "cd git/stacktach-notigen/bin; python event_pump.py ../templates 2 0\r"
 
