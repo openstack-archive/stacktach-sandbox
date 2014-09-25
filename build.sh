@@ -4,7 +4,7 @@ echo "StackTach dev env build script"
 
 SOURCE_DIR=git
 VENV_DIR=.venv
-PIPELINE_ENGINE=oahu
+PIPELINE_ENGINE=winchester
 
 if [[ -f local.sh ]]; then
     source local.sh
@@ -19,10 +19,14 @@ if [[ ! -d "$VENV_DIR" ]]; then
 fi
 
 cd $SOURCE_DIR
-for file in StackTach/shoebox StackTach/simport StackTach/notigen \
-            StackTach/notabene StackTach/notification_utils rackerlabs/yagi \
-            StackTach/stackdistiller StackTach/quincy StackTach/quince \
-            StackTach/klugman StackTach/oahu StackTach/winchester
+for file in shoebox simport notigen notification-utils \
+            stackdistiller quincy quince \
+            klugman winchester
+do
+    git clone http://git.openstack.org/cgit/stackforge/stacktach-$file
+done
+# We still have some stragglers ...
+for file in StackTach/notabene rackerlabs/yagi
 do
     git clone https://github.com/$file
 done
@@ -55,4 +59,3 @@ then
 fi
 
 screen -c screenrc.$PIPELINE_ENGINE
-
