@@ -35,6 +35,7 @@ cd ..
 source ./$VENV_DIR/bin/activate
 
 # Some extra required libs ...
+pip install mysql-connector-python --allow-external mysql-connector-python
 pip install gunicorn
 pip install httpie
 pip install librabbitmq

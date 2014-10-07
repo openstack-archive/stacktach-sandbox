@@ -28,7 +28,16 @@ database:
 
 distiller_config: event_definitions.yaml
 trigger_definitions: triggers.yaml
+#trigger_definitions: usage_triggers.yaml
 pipeline_config: pipelines.yaml
+#pipeline_config: usage_pipelines.yaml
+
+# If you are replaying old events (timestamps in the past)
+# you will need a time service to keep the clocks
+# between yagi and the pipeline workers in sync. 
+# Don't set this if you're running with real-time events.
+#time_sync_endpoint: http://127.0.0.1:8001
 
 pipeline_handlers:
     logger: winchester.pipeline_handler:LoggingHandler
+    usage_pipeline: winchester.pipeline_handler:UsageHandler
