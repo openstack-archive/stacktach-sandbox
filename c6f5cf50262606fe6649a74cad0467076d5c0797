@@ -1,0 +1,8 @@
+Verified+2: Jenkins
+Code-Review+2: Monsyne Dragon <mdragon@rackspace.com>
+Workflow+1: Monsyne Dragon <mdragon@rackspace.com>
+Submitted-by: Jenkins
+Submitted-at: Thu, 16 Oct 2014 20:05:39 +0000
+Reviewed-on: https://review.openstack.org/125263
+Project: stackforge/stacktach-sandbox
+Branch: refs/heads/master
