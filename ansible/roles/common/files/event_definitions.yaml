@@ -26,12 +26,15 @@
     service:
       fields: publisher_id
       plugin: split
+    instance_flavor:
+      fields: 
+        - payload.instance_type
+        - payload.image_meta.instance_type_name
+        - payload.image_meta.instance_type_flavorid
     instance_flavor_id:
       type: int
       fields: 
-        - payload.instance_flavor_id 
-        - payload.image_meta.instance_type_flavor_id
-        - payload.instance_type_id
+        - payload.instance_flavor_id
     memory_mb:
       type: int
       fields: payload.memory_mb
@@ -47,8 +50,6 @@
     vcpus:
       type: int
       fields: payload.vcpus
-    instance_type:
-      fields: payload.instance_type
     state:
       fields: payload.state
     os_architecture:
