@@ -1,0 +1,14 @@
+## Lowest level config defaults for the stv3-worker role
+
+# used in yagi.conf
+rabbit_host: localhost
+rabbit_user: guest
+rabbit_password: password
+rabbit_port: 5672
+rabbit_vhost: /
+rabbit_exchange: nova
+
+# shoebox credentials ...
+swift_region: DFW
+swift_username: my_username
+rax_api_key: my_api_key

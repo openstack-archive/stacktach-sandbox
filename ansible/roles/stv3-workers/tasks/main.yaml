@@ -1,0 +1,35 @@
+## Main task file for stv3-workers role
+# All the users, groups, directories and code are 
+# set up by the common role.
+
+---
+- name: yagi.conf
+  template: src=yagi.conf.j2 dest=/etc/stv3/yagi.conf 
+            owner=stv3 group=stv3 mode=0644
+  notify: 
+    - restart yagi-event
+
+- name: swift_credentials.conf
+  template: src=swift_credentials.conf.j2 dest=/etc/stv3/swift_credentials.conf 
+            owner=stv3 group=stv3 mode=0644
+  notify: 
+    - restart yagi-event
+
+- name: yagi-event-initd
+  copy: src=yagi-event.debian.init.d dest=/etc/init.d/yagi-event 
+        owner=stv3 group=stv3 mode=0755
+
+- name: pipeline-worker-initd
+  copy: src=pipeline-worker.debian.init.d 
+        dest=/etc/init.d/pipeline_worker 
+        owner=stv3 group=stv3 mode=0755
+
+- name: yagi-event
+  debug: msg="Starting yagi-event"
+  notify: 
+    - restart yagi-event
+
+- name: pipeline-worker
+  debug: msg="Starting pipeline-worker"
+  notify: 
+    - restart pipeline-worker
