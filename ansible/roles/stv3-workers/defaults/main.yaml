@@ -1,0 +1,44 @@
+## Lowest level config defaults for the stv3-worker role
+
+# used in yagi.conf
+rabbit_host: localhost
+rabbit_user: guest
+rabbit_password: password
+rabbit_port: 5672
+rabbit_vhost: /
+rabbit_exchange: nova
+
+# shoebox credentials ...
+swift_region: DFW
+swift_username: my_username
+rax_api_key: my_api_key
+
+# used in winchester.yaml
+config_path: 
+    - /etc/stv3
+
+# used in logging.conf
+root_log_level: WARNING
+yagi_log_level: INFO
+winchester_log_level: DEBUG
+amqp_log_level: WARNING
+
+# "level = INFO" logs SQL queries.
+# "level = DEBUG" logs SQL queries and results.
+# "level = WARNING" logs neither. Recommended for production systems
+sqlalchemy_log_level: WARNING
+
+statistics_period: 10
+pipeline_worker_batch_size: 1000
+pipeline_worker_delay: 10
+
+#stackdistiller_plugins:
+#   - my_plugin_1
+#   - my_plugin_2
+
+catch_all_notifications: false
+
+database_url: mysql://winchester:testpasswd@localhost/winchester
+
+pipeline_handlers:
+    logger: winchester.pipeline_handler:LoggingHandler
