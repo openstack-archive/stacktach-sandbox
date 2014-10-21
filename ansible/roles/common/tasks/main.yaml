@@ -1,0 +1,76 @@
+## Main task file for common role
+---
+- name: stv3 group
+  group: name=stv3 system=yes state=present
+
+- name: stv3 user
+  user: name=stv3 group=stv3 createhome=no system=yes state=present
+
+- name: stv3 config directory
+  file: path=/etc/stv3 state=directory owner=stv3 group=stv3
+        mode=0755
+
+- name: stv3 /var/run directory for pid
+  file: path=/var/run/stv3 state=directory owner=stv3 group=stv3
+        mode=0755
+
+- name: stv3 /var/log directory for logfiles
+  file: path=/var/log/stv3 state=directory owner=stv3 group=stv3
+        mode=0755
+
+- name: install unzip
+  apt: name=unzip update_cache=yes
+
+- name: install mysql-client
+  apt: name=mysql-client update_cache=yes
+
+- name: move tarball
+  unarchive: src={{tarball_absolute_path}} dest=/opt
+             owner=stv3 group=stv3
+
+- name: fix source code ownership
+  file: path=/opt/stv3 owner=stv3 group=stv3 recurse=yes
+
+- name: winchester.yaml
+  template: src=winchester.yaml.j2 dest=/etc/stv3/winchester.yaml owner=stv3
+            group=stv3 mode=0644
+  notify: 
+    - restart yagi-event
+    - restart pipeline-worker
+    - restart stv3-api
+
+- name: distiller.conf
+  copy: src=distiller.conf dest=/etc/stv3/distiller.conf
+        owner=stv3 group=stv3 mode=0644
+  notify: 
+    - restart yagi-event
+    - restart pipeline-worker
+
+- name: pipelines.yaml
+  copy: src=pipelines.yaml dest=/etc/stv3/pipelines.yaml
+        owner=stv3 group=stv3 mode=0644
+  notify: 
+    - restart yagi-event
+    - restart pipeline-worker
+
+- name: triggers.yaml
+  copy: src=triggers.yaml dest=/etc/stv3/triggers.yaml
+        owner=stv3 group=stv3 mode=0644
+  notify: 
+    - restart yagi-event
+    - restart pipeline-worker
+
+- name: event_definitions.yaml
+  copy: src=event_definitions.yaml dest=/etc/stv3/event_definitions.yaml
+        owner=stv3 group=stv3 mode=0644
+  notify: 
+    - restart yagi-event
+    - restart pipeline-worker
+
+- name: logging.conf
+  template: src=logging.conf.j2 dest=/etc/stv3/logging.conf owner=stv3
+            group=stv3 mode=0644
+  notify: 
+    - restart yagi-event
+    - restart pipeline-worker
+

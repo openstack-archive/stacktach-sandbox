@@ -1,0 +1,19 @@
+## Main entry point for the StackTach.v3 db master deployments
+##
+## Assumes an inventory value that has nodes or groups that start with
+## "stv3-db"
+##
+## Execution would look like:
+##  ansible-playbook database.yaml
+##
+---
+- name: StackTach DB Master Configurations
+  hosts: stv3-db
+  remote_user: stacktach
+  sudo: yes
+
+  vars_files:
+    - ["vars/local_settings.yaml"]
+
+  roles:
+    - stv3-db
