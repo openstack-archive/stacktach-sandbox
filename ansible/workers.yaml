@@ -1,0 +1,20 @@
+## Main entry point for the StackTach.v3 worker deployments
+##
+## Assumes an inventory value that has nodes or groups that start with
+## "stv3-workers"
+##
+## Execution would look like:
+##  ansible-playbook workers.yaml -vv
+##
+## Assumes a stv3-db setup already exists.
+---
+- name: StackTach Workers Configurations
+  hosts: stv3-workers
+  remote_user: stacktach
+  sudo: yes
+
+  vars_files:
+    - ["vars/local_settings.yaml"]
+
+  roles:
+    - stv3-workers
