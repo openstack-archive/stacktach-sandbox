@@ -2,9 +2,38 @@
 
 echo "StackTach dev env build script"
 
-SOURCE_DIR=git
+PACKAGE=false
+TOX=false
+DEPLOY=false
+
+while getopts pdt opt; do
+  case $opt in
+  p)
+      PACKAGE=true
+      ;;
+  t)
+      TOX=true
+      ;;
+  d)
+      DEPLOY=true
+      ;;
+  esac
+done
+
+shift $((OPTIND - 1))
+
+DEV_DIR=git
+PKG_DIR=dist
+SOURCE_DIR=$DEV_DIR
 VENV_DIR=.venv
 PIPELINE_ENGINE=winchester
+
+if [[ "$PACKAGE" = true ]]
+then
+    SOURCE_DIR=$PKG_DIR
+    rm -rf $PKG_DIR
+    rm -rf $VENV_DIR
+fi
 
 if [[ -f local.sh ]]; then
     source local.sh
@@ -30,6 +59,20 @@ for file in StackTach/notabene rackerlabs/yagi
 do
     git clone https://github.com/$file
 done
+
+if [[ "$TOX" = true ]]
+then
+    for file in shoebox simport notification-utils \
+                stackdistiller winchester
+    do
+        cd stacktach-$file
+        set -e
+        tox
+        set +e
+        cd ..
+    done
+fi
+
 cd ..
 
 source ./$VENV_DIR/bin/activate
@@ -59,4 +102,26 @@ then
     winchester_db -c winchester.yaml upgrade head
 fi
 
-screen -c screenrc.$PIPELINE_ENGINE
+if [[ "$PACKAGE" = true ]]
+then
+    SHA=$(git log --pretty=format:'%h' -n 1)
+    mkdir dist
+    virtualenv --relocatable $VENV_DIR
+    mv $VENV_DIR dist/stv3
+    # Fix up the activate script to new location. --relocatable doesn't handle this.
+    cd dist/stv3/bin
+    sed -i "s/VIRTUAL_ENV=\".*\"/VIRTUAL_ENV=\"\/opt\/stv3\"/" activate
+    cd ../..
+    tar -zcvf ../stacktachv3_$SHA.tar.gz stv3
+    cd ..
+    echo "Release tarball in stacktachv3_$SHA.tar.gz"
+
+    if [[ "$DEPLOY" == true ]]
+    then
+        echo ansible-playbook db.yaml --extra-vars \"tarball_absolute_path=../stacktachv3_$SHA.tar.gz\" -vvv
+        echo ansible-playbook workers.yaml --extra-vars \"tarball_absolute_path=../stacktachv3_$SHA.tar.gz\" -vvv
+        echo ansible-playbook api.yaml --extra-vars \"tarball_absolute_path=../stacktachv3_$SHA.tar.gz\" -vvv
+    fi
+else
+    screen -c screenrc.$PIPELINE_ENGINE
+fi

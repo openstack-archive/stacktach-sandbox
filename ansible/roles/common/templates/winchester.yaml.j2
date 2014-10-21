@@ -1,0 +1,38 @@
+---
+# Machine generated via ansible - do not edit!
+
+###### This adds directories to the search path for other configfiles.
+config_path:
+{% for path in config_path %}
+   - {{ path }}
+{% endfor %}
+
+###### logging
+logging_config: /etc/stv3/logging.conf
+
+###### How often to log stats
+statistics_period: {{ statistics_period }}
+
+pipeline_worker_batch_size: {{ pipeline_worker_batch_size }}
+pipeline_worker_delay: {{ pipeline_worker_delay }}
+
+{% if stackdistiller_plugins is defined %}
+distiller_trait_plugins:
+{% for plugin in stackdistiller_plugins %}
+    - {{ plugin }}
+{% endfor %}
+{% endif %}
+
+catch_all_notifications: {{ catch_all_notifications }}
+
+database:
+    url: {{ database_url }}
+
+distiller_config: /etc/stv3/event_definitions.yaml
+trigger_definitions: /etc/stv3/triggers.yaml
+pipeline_config: /etc/stv3/pipelines.yaml
+
+pipeline_handlers:
+{% for key, value in pipeline_handlers.iteritems() %}
+    {{ key }}: {{value}}
+{% endfor %}

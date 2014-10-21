@@ -1,0 +1,75 @@
+[global]
+verbose = True
+debug = True
+update_timer = 10
+
+[event_worker]
+pidfile = yagi_event_worker.pid
+daemonize = False
+event_driver = yagi.broker.rabbit.Broker
+
+[rabbit_broker]
+host = {{ rabbit_host }}
+user = {{ rabbit_user }}
+password = {{ rabbit_password }}
+port = {{ rabbit_port }}
+vhost = {{ rabbit_vhost }}
+poll_delay = 1
+exchange_name =  "{{ rabbit_exchange }}"
+
+[logging]
+logfile = /var/log/stv3/yagi.log
+default_level = {{ yagi_log_level }}
+#config_file = /etc/stv3/logging.conf
+
+[consumers]
+queues = monitor.info
+
+[consumer:monitor.info]
+#apps = yagi.handler.shoebox_handler.ShoeboxHandler
+apps = winchester.yagi_handler.WinchesterHandler
+exchange = monitor
+exchange_type = topic
+routing_key = monitor.info
+durable = True
+max_messages = 100
+
+[filters]
+cufpub = compute.instance.exists.verified,compute.instance.exists
+
+[nova]
+nova_flavor_field_name = instance_type_id
+
+[oahu]
+config_class = .|oahu_config:Config
+
+[winchester]
+config_file = /etc/stv3/winchester.yaml
+
+[shoebox]
+# Store in-process files in ./working
+# Move them to ./archive when full via the MoveFileCallback
+# Roll files every 1mb
+
+working_directory=data/working
+destination_folder=data/archive
+
+filename_template=events_%Y_%m_%d_%X_%f.dat
+roll_checker=shoebox.roll_checker:SizeRollChecker
+roll_size_mb=1
+
+distiller_conf=distiller.conf
+
+# Swift upload support
+# create a credentials file (see shoebox/bin/sample_credentials.conf)
+callback=shoebox.handlers:CallbackList
+callback_list=shoebox.handlers:MoveFileCallback, shoebox.handlers:SwiftUploadCallback, shoebox.handlers:DeleteFileCallback
+container=sandbox
+credentials_file=swift_credentials.conf
+auth_method=rackspace
+region={{ swift_region }}
+
+# If you don't want Swift support, comment the above callback=
+# entry and uncomment this one:
+#callback=shoebox.handlers:MoveFileCallback
+# which will just move the file into the archive directory.

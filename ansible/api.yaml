@@ -1,0 +1,21 @@
+## Main entry point for the StackTach.v3 worker deployments
+##
+## Assumes an inventory value that has nodes or groups that start with
+## "stv3-api"
+##
+## Execution would look like:
+##  ansible-playbook api.yaml -vv
+##
+## Assumes a stv3-db setup already exists.
+---
+- name: StackTach API Configuration
+  hosts: stv3-api
+  remote_user: stacktach
+  sudo: yes
+
+  vars_files:
+    - ["vars/local_settings.yaml"]
+
+  roles:
+    - common
+    - stv3-api
