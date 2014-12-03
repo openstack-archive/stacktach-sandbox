@@ -4,12 +4,10 @@ hardstatus alwayslastline '%{= .} %-Lw%{= .}%> %n%f %t*%{= .}%+Lw%< %-=%{g}(%{d}
 #screen -t time_sync bash
 #stuff "cd git/stacktach-notigen/bin; gunicorn -b 127.0.0.1:8001 --log-file=- 'time_sync:get_api()'\r"
 
-# not yet working w/ winchester
-#screen -t quincy bash
-#stuff "cd git/stacktach-quincy/quincy; gunicorn --log-file=- 'api:get_api(config_location=\"../../../quincy.conf\")'\r"
-
+screen -t quincy bash
+stuff "cd git/stacktach-quincy/quincy; gunicorn --log-file=- 'quincy.api:get_api(config_location=\"../../../quincy.conf\")'\r"
 screen -t bash bash
-#stuff "klugman streams\r"
+stuff "klugman streams\r"
 screen -t yagi1 bash
 stuff "yagi-event --config yagi.conf\r"
 screen -t yagi2 bash
