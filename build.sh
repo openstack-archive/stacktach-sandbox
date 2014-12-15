@@ -52,7 +52,7 @@ for file in shoebox simport notigen notification-utils \
             stackdistiller quincy quince \
             klugman winchester
 do
-    git clone http://git.openstack.org/cgit/stackforge/stacktach-$file
+    git clone http://git.openstack.org/stackforge/stacktach-$file
 done
 # We still have some stragglers ...
 for file in StackTach/notabene rackerlabs/yagi

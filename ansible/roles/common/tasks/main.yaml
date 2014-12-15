@@ -37,7 +37,6 @@
   notify: 
     - restart yagi-event
     - restart pipeline-worker
-    - restart stv3-api
 
 - name: distiller.conf
   copy: src=distiller.conf dest=/etc/stv3/distiller.conf
