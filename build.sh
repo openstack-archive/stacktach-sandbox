@@ -118,7 +118,7 @@ then
 
     if [[ "$DEPLOY" == true ]]
     then
-        echo ansible-playbook db.yaml --extra-vars \"tarball_absolute_path=../stacktachv3_$SHA.tar.gz\" -vvv
+        echo ansible-playbook database.yaml --extra-vars \"tarball_absolute_path=../stacktachv3_$SHA.tar.gz\" -vvv
         echo ansible-playbook workers.yaml --extra-vars \"tarball_absolute_path=../stacktachv3_$SHA.tar.gz\" -vvv
         echo ansible-playbook api.yaml --extra-vars \"tarball_absolute_path=../stacktachv3_$SHA.tar.gz\" -vvv
     fi
