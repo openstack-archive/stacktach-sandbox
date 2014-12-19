@@ -17,5 +17,5 @@
     - ["vars/local_settings.yaml"]
 
   roles:
-    - common
+    - stv3-common
     - stv3-workers

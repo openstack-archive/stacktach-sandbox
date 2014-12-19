@@ -17,10 +17,11 @@
 PATH=/opt/stv3/bin:/sbin:/usr/sbin:/bin:/usr/bin
 DESC="Winchester pipeline worker control"
 NAME=pipeline_worker
+CORENAME=pipeline_worker_{{item}}
 DAEMON=/opt/stv3/bin/$NAME
 DAEMON_ARGS="--config /etc/stv3/winchester.yaml"
-PIDFILE=/var/run/stv3/$NAME.pid
-SCRIPTNAME=/etc/init.d/$NAME
+PIDFILE=/var/run/stv3/$CORENAME.pid
+SCRIPTNAME=/etc/init.d/$CORENAME
 USER=stv3
 GROUP=stv3
 
@@ -66,7 +67,7 @@ do_stop()
 
 case "$1" in
   start)
-    [ "$VERBOSE" != no ] && log_daemon_msg "Starting $DESC" "$NAME"
+    [ "$VERBOSE" != no ] && log_daemon_msg "Starting $DESC" "$CORENAME"
     do_start
     case "$?" in
         0|1) [ "$VERBOSE" != no ] && log_end_msg 0 ;;
@@ -74,7 +75,7 @@ case "$1" in
     esac
     ;;
   stop)
-    [ "$VERBOSE" != no ] && log_daemon_msg "Stopping $DESC" "$NAME"
+    [ "$VERBOSE" != no ] && log_daemon_msg "Stopping $DESC" "$CORENAME"
     do_stop
     case "$?" in
         0|1) [ "$VERBOSE" != no ] && log_end_msg 0 ;;
@@ -82,10 +83,10 @@ case "$1" in
     esac
     ;;
   status)
-    status_of_proc "$DAEMON" "$NAME" && exit 0 || exit $?
+    status_of_proc "$DAEMON" "$CORENAME" && exit 0 || exit $?
     ;;
   restart|force-reload)
-    log_daemon_msg "Restarting $DESC" "$NAME"
+    log_daemon_msg "Restarting $DESC" "$CORENAME"
     do_stop
     do_start
     ;;
