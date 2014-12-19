@@ -17,10 +17,11 @@
 PATH=/opt/stv3/bin:/sbin:/usr/sbin:/bin:/usr/bin
 DESC="YAGI worker control"
 NAME=yagi-event
+CELLNAME=yagi-event-{{item.cell}}
 DAEMON=/opt/stv3/bin/$NAME
 DAEMON_ARGS="--config /etc/stv3/yagi.conf"
-PIDFILE=/var/run/stv3/$NAME.pid
-SCRIPTNAME=/etc/init.d/$NAME
+PIDFILE=/var/run/stv3/$CELLNAME.pid
+SCRIPTNAME=/etc/init.d/$CELLNAME
 USER=stv3
 GROUP=stv3
 
@@ -28,7 +29,7 @@ GROUP=stv3
 [ -x "$DAEMON" ] || exit 0
 
 # Read configuration variable file if it is present
-[ -r /etc/default/$NAME ] && . /etc/default/$NAME
+[ -r /etc/default/$CELLNAME ] && . /etc/default/$CELLNAME
 
 # Load the VERBOSE setting and other rcS variables
 . /lib/init/vars.sh
@@ -66,7 +67,7 @@ do_stop()
 
 case "$1" in
   start)
-    [ "$VERBOSE" != no ] && log_daemon_msg "Starting $DESC" "$NAME"
+    [ "$VERBOSE" != no ] && log_daemon_msg "Starting $DESC" "$CELLNAME"
     do_start
     case "$?" in
         0|1) [ "$VERBOSE" != no ] && log_end_msg 0 ;;
@@ -74,7 +75,7 @@ case "$1" in
     esac
     ;;
   stop)
-    [ "$VERBOSE" != no ] && log_daemon_msg "Stopping $DESC" "$NAME"
+    [ "$VERBOSE" != no ] && log_daemon_msg "Stopping $DESC" "$CELLNAME"
     do_stop
     case "$?" in
         0|1) [ "$VERBOSE" != no ] && log_end_msg 0 ;;
@@ -82,10 +83,10 @@ case "$1" in
     esac
     ;;
   status)
-    status_of_proc "$DAEMON" "$NAME" && exit 0 || exit $?
+    status_of_proc "$DAEMON" "$CELLNAME" && exit 0 || exit $?
     ;;
   restart|force-reload)
-    log_daemon_msg "Restarting $DESC" "$NAME"
+    log_daemon_msg "Restarting $DESC" "$CELLNAME"
     do_stop
     do_start
     ;;

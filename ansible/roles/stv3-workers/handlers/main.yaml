@@ -1,7 +1,8 @@
 # Only restart stv3-worker if we didn't already go from stopped
 # to started by the stv3 worker process task
 - name: restart yagi-event
-  service: name=yagi-event state=restarted 
+  service: name=yagi-event-{{item.cell}} state=restarted 
+  with_items: cells
 
 - name: restart pipeline-worker
   service: name=pipeline_worker state=restarted 

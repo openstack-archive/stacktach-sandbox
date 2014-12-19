@@ -4,8 +4,9 @@
 
 ---
 - name: yagi.conf
-  template: src=yagi.conf.j2 dest=/etc/stv3/yagi.conf 
+  template: src=yagi.conf.j2 dest=/etc/stv3/yagi-{{item.cell}}.conf 
             owner=stv3 group=stv3 mode=0644
+  with_items: cells
   notify: 
     - restart yagi-event
 
@@ -16,12 +17,13 @@
     - restart yagi-event
 
 - name: yagi-event-initd
-  copy: src=yagi-event.debian.init.d dest=/etc/init.d/yagi-event 
+  template: src=yagi-event.debian.init.d.j2 dest=/etc/init.d/yagi-event-{{item.cell}} 
         owner=stv3 group=stv3 mode=0755
+  with_items: cells
 
 - name: pipeline-worker-initd
-  copy: src=pipeline-worker.debian.init.d 
-        dest=/etc/init.d/pipeline_worker 
+  template: src=pipeline-worker.debian.init.d.j2
+        dest=/etc/init.d/pipeline_worker
         owner=stv3 group=stv3 mode=0755
 
 - name: yagi-event
