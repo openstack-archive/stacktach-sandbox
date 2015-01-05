@@ -49,7 +49,7 @@ fi
 
 cd $SOURCE_DIR
 for file in shoebox simport notigen notification-utils \
-            stackdistiller quincy quince \
+            stackdistiller quincy quince timex \
             klugman winchester
 do
     git clone http://git.openstack.org/stackforge/stacktach-$file
