@@ -24,6 +24,9 @@
 - name: install mysql-client
   apt: name=mysql-client update_cache=yes
 
+- name: install libmysqlclient-dev
+  apt: name=libmysqlclient-dev update_cache=yes
+
 - name: move tarball
   unarchive: src={{tarball_absolute_path}} dest=/opt
              owner=stv3 group=stv3
