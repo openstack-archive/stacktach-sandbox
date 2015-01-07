@@ -30,6 +30,10 @@ PIPELINE_ENGINE=winchester
 
 if [[ "$PACKAGE" = true ]]
 then
+    # Ensure libmysqlclient-dev is installed on build machine.
+    # TODO(sandy): Support other distros.
+    dpkg -s libmysqlclient-dev 2>/dev/null >/dev/null \
+            || sudo apt-get -y install libmysqlclient-dev
     SOURCE_DIR=$PKG_DIR
     rm -rf $PKG_DIR
     rm -rf $VENV_DIR
