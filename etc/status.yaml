@@ -1,0 +1,28 @@
+cell_names:
+    - cell1
+    - cell2
+    - global
+
+# will be optional and prompted ...
+username: myusername
+password: mypassword
+
+ssh_port: 22
+tail_lines: 100
+
+worker_hostnames:
+    - worker1.example.com
+    - worker2.example.com
+
+# Which vhost is your rabbit using?
+vhost: nova
+
+rabbit_hostnames:
+    - rabbit.global.example.com
+    - rabbit.cell1.example.com
+    - rabbit.cell2.example.com
+
+# However you have your OpenStack service configured.
+# Could be multiple queues to watch.
+queue_prefixes:
+    - notifications
