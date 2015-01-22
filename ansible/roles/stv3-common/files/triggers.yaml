@@ -5,11 +5,13 @@
   - instance_id
   - timestamp: "day"
   expiration: "$last + 1h"
-  fire_pipeline: "test_pipeline"
-  expire_pipeline: "test_expire_pipeline"
+  fire_pipeline: "usage_pipeline"
+  expire_pipeline: "usage_expire_pipeline"
   match_criteria:
   - event_type:
     - compute.instance.*
+    - scheduler.run_instance.*
+    - snapshot_instance
     - "!compute.instance.exists"
 #### Traits are optional. 
 #    traits:

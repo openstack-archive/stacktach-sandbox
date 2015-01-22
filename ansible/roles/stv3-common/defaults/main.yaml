@@ -5,8 +5,8 @@ config_path:
     - /etc/stv3
 
 # used in logging.conf
-root_log_level: WARNING
-yagi_log_level: INFO
+root_log_level: DEBUG
+yagi_log_level: DEBUG
 winchester_log_level: DEBUG
 amqp_log_level: WARNING
 
@@ -29,3 +29,4 @@ catch_all_notifications: false
 
 pipeline_handlers:
     logger: winchester.pipeline_handler:LoggingHandler
+    usage: winchester.pipeline_handler:UsageHandler

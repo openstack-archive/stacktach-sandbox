@@ -1,3 +1,4 @@
+---
 - name: test_trigger
   debug_level: 2
   distinguished_by:
@@ -8,9 +9,9 @@
   expire_pipeline: "test_expire_pipeline"
   match_criteria:
   - event_type:
+    - compute.instance.*
     - scheduler.run_instance.*
     - snapshot_instance
-    - compute.instance.*
     - "!compute.instance.exists"
 #### Traits are optional. 
 #    traits:
