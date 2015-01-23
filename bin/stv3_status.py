@@ -72,16 +72,19 @@ lines = config.get('tail_lines', '100')
 queue_prefixes = config.get('queue_prefixes', ['monitor'])
 
 for worker in worker_hostnames:
+    commands = ["ps aux | grep -E 'yagi-event|pipeline_worker'"]
     for cell in cell_names:
-        print "--- Worker: %s Cell: %s" % (worker, cell)
-        ret = ssh(worker,
-                      ["tail --lines %s /var/log/stv3/yagi-%s.log" %
-                            (lines, cell),
-                       "ps aux | grep -E 'yagi-event|pipeline_worker'"],
-                  username, password, port)
-        with open("yagi-%s.log" % cell, "w") as o:
-            o.write(ret[0])
-        print ret[1]
+        commands.append("tail --lines %s /var/log/stv3/yagi-%s.log" %
+                            (lines, cell))
+
+    print "--- worker: %s" % (worker, )
+    ret = ssh(worker, commands, username, password, port)
+
+    print ret[0]
+    for i, cell in enumerate(cell_names):
+        print "Writing %s-yagi-%s.log" % (worker, cell)
+        with open("%s-yagi-%s.log" % (worker, cell), "w") as o:
+            o.write(ret[i+1])
 
 prefixes = '|'.join(queue_prefixes)
 for rabbit in rabbit_hostnames:
