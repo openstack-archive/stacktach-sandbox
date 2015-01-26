@@ -18,7 +18,7 @@ PATH=/opt/stv3/bin:/sbin:/usr/sbin:/bin:/usr/bin
 DESC="Gunicorn service control"
 NAME=gunicorn
 DAEMON=/opt/stv3/bin/$NAME
-DAEMON_ARGS="--log-file=/var/log/stv3/gunicorn.log quincy.api:get_api(config_location=\"/etc/stv3/quincy.conf\")"
+DAEMON_ARGS="--log-file=/var/log/stv3/gunicorn.log -b 0.0.0.0 quincy.api:get_api(config_location=\"/etc/stv3/quincy.conf\")"
 PIDFILE=/var/run/stv3/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 USER=stv3
