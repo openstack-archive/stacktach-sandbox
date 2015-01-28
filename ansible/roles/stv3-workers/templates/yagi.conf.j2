@@ -23,7 +23,7 @@ default_level = {{ yagi_log_level }}
 #config_file = /etc/stv3/logging.conf
 
 [consumers]
-queues = monitor.info
+queues = monitor.info,monitor.error
 
 [consumer:monitor.info]
 #apps = yagi.handler.shoebox_handler.ShoeboxHandler
@@ -31,6 +31,14 @@ apps = winchester.yagi_handler.WinchesterHandler
 exchange = monitor
 exchange_type = topic
 routing_key = monitor.info
+durable = True
+max_messages = 100
+
+[consumer:monitor.error]
+apps = winchester.yagi_handler.WinchesterHandler
+exchange = monitor
+exchange_type = topic
+routing_key = monitor.error
 durable = True
 max_messages = 100
 
