@@ -66,6 +66,7 @@ username = config.get('username')
 password = config.get('password')
 worker_hostnames = config['worker_hostnames']
 rabbit_hostnames = config['rabbit_hostnames']
+api_hostnames = config['api_hostnames']
 port = int(config.get('ssh_port', 22))
 vhost = config.get('vhost', '/')
 lines = config.get('tail_lines', '100')
@@ -85,6 +86,19 @@ for worker in worker_hostnames:
         print "Writing %s-yagi-%s.log" % (worker, cell)
         with open("%s-yagi-%s.log" % (worker, cell), "w") as o:
             o.write(ret[i+1])
+
+for api in api_hostnames:
+    commands = ["ps aux | grep -E 'gunicorn'",
+                "tail --lines %s /var/log/stv3/gunicorn.log" % (lines, ))
+               ]
+
+    print "--- api: %s" % (api, )
+    ret = ssh(worker, commands, username, password, port)
+
+    print ret[0]
+    print "Writing %s-gunicorn.log" % (worker,)
+    with open("%s-gunicorn.log" % (worker,), "w") as o:
+        o.write(ret[1])
 
 prefixes = '|'.join(queue_prefixes)
 for rabbit in rabbit_hostnames:
