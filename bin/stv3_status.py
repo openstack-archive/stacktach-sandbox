@@ -73,7 +73,7 @@ lines = config.get('tail_lines', '100')
 queue_prefixes = config.get('queue_prefixes', ['monitor'])
 
 for worker in worker_hostnames:
-    commands = ["ps aux | grep -E 'yagi-event|pipeline_worker'"]
+    commands = ["ps auxww | grep -E 'yagi-event|pipeline_worker'"]
     for cell in cell_names:
         commands.append("tail --lines %s /var/log/stv3/yagi-%s.log" %
                             (lines, cell))
@@ -88,16 +88,15 @@ for worker in worker_hostnames:
             o.write(ret[i+1])
 
 for api in api_hostnames:
-    commands = ["ps aux | grep -E 'gunicorn'",
-                "tail --lines %s /var/log/stv3/gunicorn.log" % (lines, ))
-               ]
+    commands = ["ps auxww | grep gunicorn",
+                "tail --lines %s /var/log/stv3/gunicorn.log" % (lines, )]
 
     print "--- api: %s" % (api, )
-    ret = ssh(worker, commands, username, password, port)
+    ret = ssh(api, commands, username, password, port)
 
     print ret[0]
-    print "Writing %s-gunicorn.log" % (worker,)
-    with open("%s-gunicorn.log" % (worker,), "w") as o:
+    print "Writing %s-gunicorn.log" % (api,)
+    with open("%s-gunicorn.log" % (api,), "w") as o:
         o.write(ret[1])
 
 prefixes = '|'.join(queue_prefixes)
