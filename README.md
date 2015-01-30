@@ -3,6 +3,8 @@ sandbox
 
 Dev env for StackTach development. Uses Notigen event generator and yagi.
 
+Note: read the [Operators Guide etherpad](https://etherpad.openstack.org/p/stv3_ops_guide) for deployment notes.
+
 Prerequisites:
 
     make sure you have a working python dev environment (2.7+ ideally)

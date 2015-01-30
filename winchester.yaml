@@ -32,6 +32,8 @@ trigger_definitions: triggers.yaml
 pipeline_config: pipelines.yaml
 #pipeline_config: usage_pipelines.yaml
 
+purge_completed_streams: false
+
 # If you are replaying old events (timestamps in the past)
 # you will need a time service to keep the clocks
 # between yagi and the pipeline workers in sync.
