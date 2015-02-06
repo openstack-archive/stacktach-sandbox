@@ -28,7 +28,7 @@ queues = monitor.info3,monitor.error3
 [consumer:monitor.info3]
 #apps = yagi.handler.shoebox_handler.ShoeboxHandler
 apps = winchester.yagi_handler.WinchesterHandler
-exchange = monitor
+exchange = nova
 exchange_type = topic
 routing_key = monitor.info
 durable = True
@@ -36,7 +36,7 @@ max_messages = 100
 
 [consumer:monitor.error3]
 apps = winchester.yagi_handler.WinchesterHandler
-exchange = monitor
+exchange = nova
 exchange_type = topic
 routing_key = monitor.error
 durable = True
