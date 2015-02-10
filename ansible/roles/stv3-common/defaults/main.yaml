@@ -30,3 +30,4 @@ catch_all_notifications: false
 pipeline_handlers:
     logger: winchester.pipeline_handler:LoggingHandler
     usage: winchester.pipeline_handler:UsageHandler
+    notabene: winchester.pipeline_handler:NotabeneHandler

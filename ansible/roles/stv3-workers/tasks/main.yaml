@@ -26,13 +26,5 @@
         dest=/etc/init.d/pipeline_worker_{{item}}
         owner=stv3 group=stv3 mode=0755
   with_sequence: count={{num_pipeline_workers}}
-
-- name: yagi-event
-  debug: msg="Starting yagi-event"
-  notify: 
-    - restart yagi-event
-
-- name: pipeline-worker
-  debug: msg="Starting pipeline-worker"
   notify: 
     - restart pipeline-worker
