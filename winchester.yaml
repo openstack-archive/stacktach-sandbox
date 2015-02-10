@@ -28,9 +28,7 @@ database:
 
 distiller_config: event_definitions.yaml
 trigger_definitions: triggers.yaml
-#trigger_definitions: usage_triggers.yaml
 pipeline_config: pipelines.yaml
-#pipeline_config: usage_pipelines.yaml
 
 purge_completed_streams: false
 
@@ -42,4 +40,6 @@ purge_completed_streams: false
 
 pipeline_handlers:
     logger: winchester.pipeline_handler:LoggingHandler
-    usage_pipeline: winchester.pipeline_handler:UsageHandler
+    usage: winchester.pipeline_handler:UsageHandler
+    notabene: winchester.pipeline_handler:NotabeneHandler
+

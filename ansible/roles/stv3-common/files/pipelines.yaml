@@ -2,5 +2,33 @@
 usage_pipeline:
     - logger
     - usage
+    - name: notabene
+      params: 
+        host: localhost
+        user: guest
+        password: guest
+        port: 5672
+        vhost: /
+        library: librabbitmq
+        exchange: nova
+        exchange_type: topic
+        queue_name: monitor.info
+        env_keys:
+            - usage_notifications
+
 usage_expire_pipeline:
     - logger
+    - usage
+    - name: notabene
+      params: 
+        host: localhost
+        user: guest
+        password: guest
+        port: 5672
+        vhost: /
+        library: librabbitmq
+        exchange: nova
+        exchange_type: topic
+        queue_name: monitor.info
+        env_keys:
+            - usage_notifications

@@ -17,9 +17,9 @@ vhost = /
 poll_delay = 0.5
 
 [logging]
-logfile = yagi.log
+#logfile = yagi.log
+#default_level = DEBUG
 config_file = logging.conf
-default_level = INFO
 
 [consumers]
 queues = monitor.info
