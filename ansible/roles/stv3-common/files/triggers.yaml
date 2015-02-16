@@ -4,22 +4,22 @@
   distinguished_by:
   - instance_id
   - timestamp: "day"
-  expiration: "$last + 1h"
+  expiration: "$last + 2d"
   fire_pipeline: "usage_pipeline"
   expire_pipeline: "usage_expire_pipeline"
   match_criteria:
   - event_type:
     - compute.instance.*
-    - scheduler.run_instance.*
     - snapshot_instance
+    - keypair.import.*
+    - rebuild_instance
+    - compute.instance.*
     - "!compute.instance.exists"
-#### Traits are optional. 
-#    traits:
-#      os_distro: ubuntu
-#      memory_mb:
-#        numeric: "> 4096"
   - event_type: compute.instance.exists
-    map_distingushed_trait:
+    map_distinguished_by:
       timestamp: audit_period_beginning
   fire_criteria:
   - event_type: compute.instance.exists
+    traits:
+      audit_period_ending:
+        datetime: $audit_period_beginning + 1d

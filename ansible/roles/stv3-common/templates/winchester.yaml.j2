@@ -28,6 +28,8 @@ catch_all_notifications: {{ catch_all_notifications }}
 database:
     url: {{ database_url }}
 
+purge_completed_streams: false
+
 distiller_config: /etc/stv3/event_definitions.yaml
 trigger_definitions: /etc/stv3/triggers.yaml
 pipeline_config: /etc/stv3/pipelines.yaml

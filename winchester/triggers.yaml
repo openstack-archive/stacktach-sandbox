@@ -16,7 +16,7 @@
     - compute.instance.*
     - "!compute.instance.exists"
   - event_type: compute.instance.exists
-    map_distingushed_by:
+    map_distinguished_by:
       timestamp: audit_period_beginning
   fire_criteria:
   - event_type: compute.instance.exists
