@@ -99,6 +99,9 @@ do
     cd ../..
 done
 
+# Hack(sandy): remove msgpack that conflicts with carrot
+pip uninstall -y msgpack-python
+
 (cat yagi.conf.$PIPELINE_ENGINE ; cat yagi.conf.common ) > yagi.conf
 
 if [ $PIPELINE_ENGINE == "winchester" ]

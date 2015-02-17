@@ -36,29 +36,6 @@ config_class = .|oahu_config:Config
 config_file = winchester.yaml
 
 [shoebox]
-# Store in-process files in ./working
-# Move them to ./archive when full via the MoveFileCallback
-# Roll files every 1mb
-
-working_directory=data/working
-destination_folder=data/archive
-
-filename_template=events_%Y_%m_%d_%X_%f.dat
-roll_checker=shoebox.roll_checker:SizeRollChecker
-roll_size_mb=1
-
-distiller_conf=distiller.conf
-
-# Swift upload support
-# create a credentials file (see shoebox/bin/sample_credentials.conf)
-callback=shoebox.handlers:CallbackList
-callback_list=shoebox.handlers:MoveFileCallback, shoebox.handlers:SwiftUploadCallback, shoebox.handlers:DeleteFileCallback
-container=sandbox
-credentials_file=swift_credentials.conf
-auth_method=rackspace
-region=DFW
-
-# If you don't want Swift support, comment the above callback=
-# entry and uncomment this one:
-#callback=shoebox.handlers:MoveFileCallback
-# which will just move the file into the archive directory.
+working_directory=data/events
+filename_template=%Y%m%d-[[TIMESTAMP]]-stv3-[[CRC]].json.gz
+roll_manager=shoebox.roll_manager:WritingJSONRollManager
