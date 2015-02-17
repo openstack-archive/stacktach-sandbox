@@ -55,5 +55,5 @@ config_file = /etc/stv3/winchester.yaml
 
 [shoebox]
 working_directory=/etc/stv3/events
-filename_template=%Y%m%d-[[TIMESTAMP]]-stv3-[[CRC]].json.gz
+filename_template=%Y%m%d-[[TIMESTAMP]]-region-{{item.cell}}-stv3-[[CRC]].json.gz
 roll_manager=shoebox.roll_manager:WritingJSONRollManager
