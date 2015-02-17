@@ -23,6 +23,20 @@ TL;DR:
         set the database url appropriately in winchester.yaml
     ./build.sh
 
+Using Vagrant for fast local provisioning:
+
+    * Install [Vagrant](https://www.vagrantup.com/downloads.html)
+    * Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+    * git clone https://github.com/StackTach/sandbox.git
+    * cd sandbox/vagrant
+    * vagrant up
+    * vagrant ssh
+    * cd stacktach-sandbox
+    * sudo ./build.sh
+
+    Note: This uses sandbox defaults including the use of the Winchester
+	pipeline.
+
 Tweaks:
 
 You can create a `local.sh` to override the defaults:
