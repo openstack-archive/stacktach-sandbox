@@ -1,0 +1,434 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="StackTach.v3">
+    <meta name="author" content="Sandy Walsh">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>StackTach.v3</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+    <link href="stv3-narrow.css" rel="stylesheet">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+    <style>
+      .bottom_padding {
+        padding-bottom: 20px;
+      }
+    </style>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+  </head>
+
+  <body>
+
+    <div class="container">
+      <div class="header bottom_padding">
+        <nav>
+          <ul class="nav nav-pills pull-right">
+            <li role="presentation"><a href="index.html">Home</a></li>
+            <li role="presentation" class="active"><a href="about.html">Docs</a></li>
+            <li role="presentation"><a href="install.html">Getting Started</a></li>
+            <li role="presentation"><a href="#">API</a></li>
+            <li role="presentation"><a href="#">Screencasts</a></li>
+            <li role="presentation"><a href="#">Contribute</a></li>
+          </ul>
+        </nav>
+        <img src="StackTach_160x70.png"/>
+      </div>
+
+      <div class="row marketing">
+        <div class="col-lg-12">
+          <h3>The Parts</h3>
+          <p>Let's spend a few seconds to talk about the StackTach.v3 components and establish some terminology.</p>
+
+          <img src='v3_arch.gif' class="img-rounded"/>
+
+          <ul>
+            <li>The source application (aka: your application) publishes <a href='apdx.html#notification'>notifications</a> to the <a href='faq.html#queues'>queue</a>.
+            <li><a href='apdx.html#yagi'>Yagi</a> consumes these notifications from the queue and passes them onto a chain of Yagi <a href='apdx.html#yagi_handler'>Handlers</a>. 
+            <li>Some yagi handlers include:
+                <ul>
+                <li><a href='apdx.html#shoebox'>Shoebox</a> for long-term archiving.
+                <li><a href='apdx.html#atomhopper'>Atom-Hopper</a> for pub-sub ATOM feeds.
+                <li><a href='apdx.html#distiller'>Stack-distiller</a>/<a href='apdx.html#winchester'>Winchester</a> for StackTach.v3 stream processing.
+                </ul>
+            <li>Winchester takes the distilled notifications (called <a href='apdx.html#events'>events</a>) and stores them in the MySQL database. 
+            <li>Streams may be created or processed as new events flow into the system. This can result in new events or notifications being generated.
+            <li>Any new notifications can be published back into the queue for subsequent processing via the <a href='apdx.html#notabene'>Notabene</a> pipeline handler. 
+            <li>... the sequence repeats itself.
+          </ul>
+
+          <div class="panel panel-info">
+            <div class="panel-heading">
+            <h3 class="panel-title">Enabling notifications in OpenStack</h3>
+            </div>
+            <div class="panel-body">
+             <p>In order to get notifications from OpenStack, you'll need to put the following lines in your service configuration files.</p>
+
+<pre>
+--notification_driver=nova.openstack.common.notifier.rpc_notifier
+--notification_topics=monitor
+</pre>
+
+            <p>Where "monitor" is the name of the queue you wish to send the notifications to. When you are configuring Yagi, you'll need to ensure the queue name prefix matches what you've defined here.</p>
+            </div>
+          </div>
+
+          <h3>Consuming Notifications with Yagi</h3>
+          <p>You're going to need a way to get those notifications out of your queuing system. That's what Yagi does. Yagi reads notifications from one place and spits them out somewhere else. It's highly configurable and battle-tested for large scale deployment.</p>
+
+          <p>You launch the <code>yagi-events</code> process with the following command:</p>
+<pre>
+yagi-event --config yagi.conf
+</pre>
+          <p>where <code>yagi.conf</code> is the name of your yagi configuration file.</p>
+
+<span class="label label-default">A sample Yagi config file</span>
+<pre class='pre-scrollable'>
+[global]
+verbose = False
+debug = True
+update_timer = 10
+
+[event_worker]
+event_driver = yagi.broker.rabbit.Broker
+
+[rabbit_broker]
+host = localhost
+user = guest
+password = guest
+port = 5672
+vhost = /
+poll_delay = 0.5
+
+[consumers]
+queues = monitor.info
+
+[consumer:monitor.info]
+apps = winchester.yagi_handler.WinchesterHandler, yagi.handler.shoebox_handler.ShoeboxHandler
+exchange = monitor
+exchange_type = topic
+routing_key = monitor.info
+durable = True
+max_messages = 100
+</pre>
+
+          <p>The important part of this configuration is the <code>[event_worker]</code> section. This says we want to use the RabbitMQ data source. The RabbitMQ connectivity information is stored in the <code>[rabbit_broker]</code> section. The name of each rabbitmq queue to consume from is specified in the <code>[consumers]</code> section. For every queue you define there, you will need a <code>[consumer:&lt;queue_name&gt;]</code> section. This last section is where there real magic happens. Beyond defining the exchange, routing_key and durability characteristics, it defines the chain of <code>Yagi Handlers</code> that will run on every notification that gets consumed. </p>
+          <p>You can write your own Yagi handlers if you like, but there are a number that ship with StackTach.v3 to do some interesting things. The most important of these is the <code>winchester.yagi_handler:WinchesterHandler</code>. This handler is your entry point into StackTach.v3 stream processing. But first, we need to convert those messy notifications into events ...</p>
+          <h3>Distilling Notifications to Events</h3>
+          <p>Now we have notifications coming into Winchester. But, as we hinted at above, we need to take the larger notification and <i>distill</i> it down into a, more manageable, event. The stack-distiller module makes this happen. Within StackTach.v3, this is part of <code>winchester.yagi_handler:WinchesterHandler</code>.</p>
+          <p>A notification is a large, nested JSON data structure. But we don't need all of that data for stream processing. In fact, we generally only require a few <a href='apdx.html#trait'>Traits</a> from the notification. That's what distilling does. It pulls out the important traits, scrubs the data and uses that. Distillations are done via the distillation configuration file (specified in winchester.conf). </p>
+
+          <p>Only <code>timestamp</code> and <code>event_type</code> are required traits.</p>
+<span class="label label-default">A sample notification</span>
+<pre class='pre-scrollable'>
+{
+  '_context_is_admin': True,    
+  '_context_project_id': u'7c150a59fe714e6f9263774af9688f0e',    
+  '_context_quota_class': None,    
+  '_context_read_deleted': u'no',    
+  '_context_remote_address': u'10.0.2.15',    
+  '_context_request_id': u'req-d68b36e0-9233-467f-9afb-d81435d64d66',    
+  '_context_roles': [u'admin'],    
+  '_context_timestamp': u'2012-05-08T20:23:41.425105',    
+  '_context_user_id': u'1e3ce043029547f1a61c1996d1a531a2',    
+  'event_type': u'compute.instance.create.end',    
+  'message_id': u'dae6f69c-00e0-41c0-b371-41ec3b7f4451',    
+  'priority': u'INFO',    
+  'publisher_id': u'compute.vagrant-precise',    
+  'timestamp': u'2012-05-08 20:23:48.028195',
+  'payload': {
+      'created_at': u'2012-05-08 20:23:41',                 
+      'deleted_at': u'',                 
+      'disk_gb': 0,                 
+      'display_name': u'testme',                 
+      'fixed_ips': [{ 'address': u'10.0.0.2',                                 
+                  'floating_ips': [],                                 
+                  'meta': {},                                 
+                  'type': u'fixed',               
+                  'version': 4}],                 
+      'image_ref_url': u'http://10.0.2.15:9292/images/UUID',                 
+      'instance_id': u'9f9d01b9-4a58-4271-9e27-398b21ab20d1',                 
+      'instance_type': u'm1.tiny',                 
+      'instance_type_id': 2,                 
+      'launched_at': u'2012-05-08 20:23:47.985999',                 
+      'memory_mb': 512,                 
+      'state': u'active',                 
+      'state_description': u'',                 
+      'tenant_id': u'7c150a59fe714e6f9263774af9688f0e',                 
+      'user_id': u'1e3ce043029547f1a61c1996d1a531a2',                 
+      'reservation_id': u'1e3ce043029547f1a61c1996d1a531a3',                 
+      'vcpus': 1,                 
+      'root_gb': 0,                 
+      'ephemeral_gb': 0,                 
+      'host': u'compute-host-name',                 
+      'availability_zone': u'1e3ce043029547f1a61c1996d1a531a4',                 
+      'os_type': u'linux?',                 
+      'architecture': u'x86',                 
+      'image_ref': u'UUID',                 
+      'kernel_id': u'1e3ce043029547f1a61c1996d1a531a5',                 
+      'ramdisk_id': u'1e3ce043029547f1a61c1996d1a531a6',                    
+  }
+}
+</pre>
+
+          <p>A typical distiller file might look like this</p>
+
+<span class="label label-default">A sample stack-distiller.yaml</span>
+<pre class='pre-scrollable'>
+- event_type: compute.instance.*
+  traits: 
+    tenant_id:
+      fields:
+        - payload.tenant_id
+        - _context_project_id
+    user_id:
+      fields: payload.user_id
+    request_id:
+        fields: _context_request_id
+    instance_id:
+      fields:
+        - payload.instance_uuid
+        - payload.instance_id
+        - exception.kwargs.uuid
+        - instance.uuid
+</pre>
+          <p>For details on the distiller configuration grammar, see the associated <a href='https://github.com/stackforge/stacktach-stackdistiller/blob/master/doc/event_definitions_config.md'>docs</a>. Note that the distiller config file is in YAML format.</p>
+
+          <p>When processed, the notification would be converted into an event that looks like this:</p>
+<span class="label label-default">A sample event</span>
+<pre class='pre-scrollable'>
+{
+  'event_type': 'compute.instance.create.end',
+  'timestamp': datetime(2012, 05, 08, 20, 23, 48, 28195),
+  'tenant_id': '7c150a59fe714e6f9263774af9688f0e',
+  'user_id': '1e3ce043029547f1a61c1996d1a531a2',
+  'request_id': 'req-d68b36e0-9233-467f-9afb-d81435d64d66',
+  'instance_id': '9f9d01b9-4a58-4271-9e27-398b21ab20d1'
+}
+</pre>
+
+          <p>We call event key/value pairs Traits. This will be important when we start defining Streams.</p>
+
+          <h4>Differences between a notification and an event</h4>
+
+          <table class="table table-bordered">
+          <thead><tr><th>Criteria</th><th>Notification</th><th>Event</th></tr></thead>
+          <tr><td>Supports nested-data</td>
+              <td><span class="glyphicon glyphicon-ok-circle"></span></td>
+              <td><span class="glyphicon glyphicon-remove-circle"></span></td></tr>
+          <tr><td>Supports lists</td>
+              <td><span class="glyphicon glyphicon-ok-circle"></span></td>
+              <td><span class="glyphicon glyphicon-remove-circle"></span></td></tr>
+          <tr><td>Max string length</td>
+              <td>no limit</td>
+              <td>255</td></tr>
+          <tr><td>Float support</td>
+              <td><span class="glyphicon glyphicon-ok-circle"></span></td>
+              <td><span class="glyphicon glyphicon-ok-circle"></span></td></tr>
+          <tr><td>Integer support</td>
+              <td><span class="glyphicon glyphicon-ok-circle"></span></td>
+              <td><span class="glyphicon glyphicon-ok-circle"></span></td></tr>
+          <tr><td>Boolean support</td>
+              <td><span class="glyphicon glyphicon-ok-circle"></span></td>
+              <td>Coersed to Integer</td></tr>
+          <tr><td>Millisecond resolution datetime support</td>
+              <td><span class="glyphicon glyphicon-remove-circle"></span></td>
+              <td><span class="glyphicon glyphicon-ok-circle"></span></td></tr>
+          <tr><td>Datetime range support</td>
+              <td><span class="glyphicon glyphicon-remove-circle"></span></td>
+              <td><span class="glyphicon glyphicon-ok-circle"></span></td></tr>
+          </table>
+
+
+          <h3>Streams</h3>
+          <div class="alert alert-success" role="alert">Congrats! Now that you have events, you can start to make Streams!</div>
+          <p>Streams are the key to StackTach.v3. You should have a good understanding about the lifecycle of a stream and how to define a stream. So let's start with some basics ... </p>
+
+          <p>As events come into Winchester, they are sorted into streams. Any trait in the event can be used to differentiate which stream they go into. One event can go in to many streams. These traits are called <code>distinguishing_traits</code> since they are used to distinguish one stream from another. All of this is defined in the winchester configuration file.<p>
+
+<span class="label label-default">A bare-bones Winchester config file.</span>
+<pre>
+---
+database:
+    url: mysql://winchester:testpasswd@localhost/winchester
+
+distiller_config: event_definitions.yaml
+trigger_definitions: triggers.yaml
+pipeline_config: pipelines.yaml
+
+pipeline_handlers:
+    logger: winchester.pipeline_handler:LoggingHandler
+    usage: winchester.pipeline_handler:UsageHandler
+    notabene: winchester.pipeline_handler:NotabeneHandler
+</pre>
+
+        <p>The first thing you'll notice is the database connection string. But then you'll notice that the Winchester module needs three other configuration files. The distiller config file we've already covered. The other two require a little more explaination. They define your <a href='apdx.html#trigger'>Triggers</a> and your <a href='apdx.html#pipeline'>Pipelines</a>.</p>
+
+           <div class="panel panel-info">
+            <div class="panel-heading">
+            <h3 class="panel-title">Telling Yagi WinchesterHandler where to find the Winchester config file.</h3>
+            </div>
+            <div class="panel-body">
+             <p>We left that little detail out when we were explaining Yagi previously. But the WinchesterHandler needs to know where your winchester config file lives. You define this by adding a <code>[winchester]</code> section to your yagi config file.
+
+<pre>
+[winchester]
+config_file = winchester.yaml
+</pre>
+            </div>
+          </div>
+
+         
+          <h4>Triggers and Pipelines</h4>
+          <p>The trigger definition file tells winchester:</p>
+          <ul>
+            <li>into which streams to place incoming events
+            <li>which events to accept into a stream
+            <li>when a stream is ready for processing
+            <li>when a stream expires
+            <li>how to process ready streams
+            <li>how to process expired streams
+          </ul>
+
+          <img src='trigger_def.gif' class="img-rounded"/>
+
+          <p>Like the distiller config file, the trigger definition config file is YAML based.</p>
+
+<span class="label label-default">Sample trigger def file</span>
+<pre>
+- name: my_trigger
+  distinguished_by:
+  - request_id
+  expiration: "$last + 1h"
+  fire_pipeline: "my_fire_pipeline"
+  expire_pipeline: "my_expire_pipeline"
+  match_criteria:
+  - event_type:
+    - compute.instance.*
+  fire_criteria:
+  - event_type: compute.instance.*.end
+</pre>
+        </div>
+      </div>
+
+      <p>The matching criteria states the traits that need to match for the event to be included in this stream. The most common matching criteria is event_type, but you could also limit event inclusion by region, server, time range, etc. Depending on your application, it's generally better to be more inclusive of events initially.</p> 
+      <p>Streams are buckets that collect events. The bucket the event goes in is determined by the distinguishing traits you define. Generally these are traits that have a somewhat constrained set of values. For example, instance_id, request_id, user_id, tenant_id, region, server, ip_address ... are all good choices. Timestamp is generally not a good distinguishing trait since it varies so greatly. You would end up with a different stream for every incoming event and each stream would only have one event in it. Not very useful. Also, you can define multiple distinguishing traits. For example: region and the "day" portion of the timestamp. This would produce one stream for each region for each day of the month. If you had five regions, you'd end up with 5*31 stream buckets. The choices are limitless.</p>
+      <p>At some point you have to do something with the data in your buckets. This is what the fire criteria defines. You can make time-based firing criteria (such as 2 hours past the last collected event) or trait-based criteria (such as "when you see the 'foo' event"). Wildcards are permitted in matching criteria. Time-based firings are defined with the "expiration" setting. There is a simple grammar for defining how much time has to elapse for a expiry to occur. We will go into detail on this later. For real-time stream processing, it's best to keep these expiries short or stick with trait-based firing criteria. Expiries = lag.</p>
+
+      <p>Finally, we define the pipelines that will process the streams when they fire or expire. Pipelines are sets of <a href='apdx.html#pipeline_handlers'>pipeline handlers</a> that do the processing. A pipeline handler is called with all the events in that stream. The events are in the temporal order they were generated. A pipeline handler does not need to concern itself with querying the database. It has all that it needs. Out-of-the-box, StackTach.v3 comes with a collection of pipeline handler for computing OpenStack usage for billing as well as re-publishing new notifications back into the queue. More are constantly being added and writing your own pipeline handlers is trivial. But more on that later.<p> 
+
+      <p>You can define different pipelines for streams that fire and streams that expire. In the trigger definition file you simply give the name of the pipeline. Your winchester config file points to the pipeline configuration file that lists the pipeline handlers to run.<p>
+
+<span class="label label-default">Sample pipeline definition file</span>
+<pre>
+---
+my_fire_pipeline:
+    - logger
+    - usage
+    - name: notabene
+      params: 
+        host: localhost
+        user: guest
+        password: guest
+        exchange_type: topic
+        queue_name: monitor.info
+        env_keys:
+            - usage_notifications
+
+my_expire_pipeline:
+    - logger
+    - usage
+</pre>
+
+      <p>You can see the name of each of the pipeline handlers here. These will be called in the order they appear. You'll note that the notabene handler takes a set of parameters. These are passed into the handler when the pipeline is being processed. Back in the winchester configuration file you'll see where these handler names are mapped to the Python code that implements them. You can add your own handlers there.</p>
+
+      <h4>Stream States</h4>
+
+      <img src='stream_states.gif' class="img-rounded"/>
+
+      <ul>
+        <li><b>Active</b> - the stream is collecting events
+        <li><b>Firing</b> - firing criteria has been met and pipeline processing can occur
+        <li><b>Expiring</b> - expiry criteria has been met and pipeline processing can occur
+        <li><b>Completed</b> - pipeline processing has completed
+        <li><b>Error</b> - pipeline processing failed
+        <li><b>Expiry-Error</b> - expiry pipeline processing failed
+        <li><b>Retry-Firing</b> - stream marked to retry fire pipeline processing
+        <li><b>Retry-Expiry</b> - stream marked to retry expiry pipeline processing
+       </ul>
+
+       
+       <img src='pipeline_processing.gif' class="img-rounded"/>
+       <p>During pipeline processing each handler is called to process the events in the stream. A handler has three methods: handle_events(), commit() and rollback(). The handle_events() method is called for each handler in the order they're defined. If they all succeed, the commit() method of each handler is called. Otherwise, the rollback() method of each handler is called. No work should be performed in the handle_events() method. The data should be pre-computed and stored, but not actioned until in the commit() method. In the case of errors, the handle_event() method could be called many times. So, to ensure at-most-once functionality, non-reversable operations should be reserved for the commit() call. Things like, publishing new notifications, emitting metrics, sending emails, etc. should be done in commit(). rollback() is a last chance for you to unwind any work you may have performed.<p>
+
+       <h4>Stream debugging</h4>
+
+       <p>As you've seen, there are a lot of moving parts to high-volume stream processing. Dealing with thousands of events per second and monitoring many stream definitions is hard. We have added some special debugging tools to StackTach.v3 to help with this. There are better ways of debugging streams than turning your log output to DEBUG and sifting through the volumes of output. We recommend you keep your winchester log levels at INFO and turn on debugging on a per-stream basis. This is done in your trigger definition file.</p>
+
+<pre>
+---
+- name: test_trigger
+  debug_level: 2
+  distinguished_by:
+  - instance_id
+  - timestamp: "day"
+...
+</pre>
+
+      <p>The debug_level setting will enable special logging output for this stream only. The higher the number, the more detail (1 or 2 currently). Once enabled, and the yagi-event and pipeline-workers have been restarted, you will start to see log output like this:</p>
+
+<pre>
+yagi.stats[INFO line: 44] messages_sent:100|c
+yagi.broker.rabbit[INFO line: 193] Update timer elapsed: 11 seconds
+yagi.broker.rabbit[INFO line: 198]      Sent 1100 messages from monitor.info
+yagi.broker.rabbit[INFO line: 200]      Sent 1100 total messages
+yagi.broker.rabbit[INFO line: 203]      Messages per second: 100.000000
+winchester.trigger_manager[INFO line: 195] Received 116 notifications. Saved 103 events.
+winchester.debugging[INFO line: 155] ---- Trigger Definition: test_trigger ----
+winchester.debugging[INFO line: 140] Fire Criteria: 397 checks, 2 passed
+winchester.debugging[INFO line: 144]  - Not in timerange = 1
+winchester.debugging[INFO line: 144]  - Wrong event type = 295
+winchester.debugging[INFO line: 144]  - Not enough matching criteria = 99
+winchester.debugging[INFO line: 140] Match Criteria: 207 checks, 200 passed
+winchester.debugging[INFO line: 144]  - No matching criteria = 1
+winchester.debugging[INFO line: 144]  - not 'instance_id' = 2
+winchester.debugging[INFO line: 144]  - Wrong event type = 4
+winchester.debugging[INFO line: 148] Counter "New stream" = 58
+winchester.debugging[INFO line: 148] Counter "Added events" = 100
+winchester.debugging[INFO line: 148] Counter "Ready to fire" = 1
+winchester.debugging[INFO line: 161] ----------------------------
+</pre>
+      <p>The first yagi.broker.rabbit lines are from yagi itself and tells you how many events were digested over the last N seconds. Assuming this number is greater than zero, we can move onto stream debugging.</p>
+      <p>The winchester.debugging lines will tell you how fire and matching criteria is progressing. In this case, it's saying that 397 firing criteria checks were made and only 2 passed. If your debug level is 2, you will get breakdown of the reasons the checks failed. You can use this information to review your trigger definitions and see if something could be wrong. Additionally, the matching criteria results are detailed. In this case we see that, of 207 events, 200 were acceptable. The details on the 7 rejected are listed below. Finally, some "counters" are supplied on the stream processing in general. 58 new streams were created on this pass, 100 new events added to various "test_trigger" streams, and 1 stream is ready to fire.<p>
+      <p>By selectively turning on per-stream debugging, you can quickly find processing problems and ignore a lot of log noise.</p>
+
+      <footer class="footer">
+        <p>&copy; Dark Secret Software Inc. 2014</p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>
+
