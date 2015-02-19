@@ -21,4 +21,3 @@ then
     fi
 fi
 
-git clone https://github.com/stackforge/stacktach-sandbox.git

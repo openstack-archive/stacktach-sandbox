@@ -32,7 +32,7 @@ Using Vagrant for fast local provisioning:
     * vagrant up
     * vagrant ssh
     * cd stacktach-sandbox
-    * sudo ./build.sh
+    * ./build.sh
 
     Note: 
 	This uses sandbox defaults including the use of the Winchester
