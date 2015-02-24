@@ -37,5 +37,7 @@ config_file = winchester.yaml
 
 [shoebox]
 working_directory=data/events
-filename_template=%Y%m%d-[[TIMESTAMP]]-stv3-[[CRC]].json.gz
+destination_folder=data/output
+filename_template=%Y%m%d-[[TIMESTAMP]]-stv3-[[CRC]].json
 roll_manager=shoebox.roll_manager:WritingJSONRollManager
+roll_size_mb=20

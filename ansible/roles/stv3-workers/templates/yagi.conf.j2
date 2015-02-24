@@ -54,6 +54,8 @@ config_class = .|oahu_config:Config
 config_file = /etc/stv3/winchester.yaml
 
 [shoebox]
-working_directory=/etc/stv3/events
-filename_template=%Y%m%d-[[TIMESTAMP]]-region-{{item.cell}}-stv3-[[CRC]].json.gz
+working_directory=/etc/stv3/{{item.cell}}/events
+destination_folder=/etc/stv3/tarballs
+filename_template=%Y%m%d-[[TIMESTAMP]]-region-{{item.cell}}-stv3-[[CRC]].json
 roll_manager=shoebox.roll_manager:WritingJSONRollManager
+roll_size_mb=1000
