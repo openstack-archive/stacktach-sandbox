@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="StackTach.v3">
+    <meta name="author" content="Sandy Walsh">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>StackTach.v3</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+    <link href="stv3-narrow.css" rel="stylesheet">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+    <style>
+      .bottom_padding {
+        padding-bottom: 20px;
+      }
+    </style>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+  </head>
+
+  <body>
+
+    <div class="container">
+      <div class="header bottom_padding">
+        <nav>
+          <ul class="nav nav-pills pull-right">
+            <li role="presentation"><a href="index.html">Home</a></li>
+            <li role="presentation"><a href="about.html">Docs</a></li>
+            <li role="presentation"><a href="install.html">Getting Started</a></li>
+            <li role="presentation"><a href="#">API</a></li>
+            <li role="presentation"><a href="screencasts.html">Screencasts</a></li>
+            <li role="presentation"><a href="contribute.html">Contribute</a></li>
+          </ul>
+        </nav>
+        <img src="StackTach_160x70.png"/>
+      </div>
+
+      <div class="row marketing">
+        <div class="col-lg-12">
+          <h3>Glossary</h3>
+          <ul>
+            <li><a id='atomhopper'>Atom-Hopper</a> - Atom-Hopper is a java system that produces ATOM feeds in a pub-sub manner. 
+            <li><a id='distiller'>Stack Distiller</a> - Stack-Distiller is a python library that extracts key traits from a complex JSON message to produce a smaller, flat set of key-value pairs. 
+            <li><a id='events'>Events</a> - Events are what we call Notifications that have been distilled. 
+            <li><a id='handlers'>Handlers</a> - a handler is python code that processes a small chunk of data. In StackTach.v3 we have a variety of different handlers for different purposes. There are Shoebox Handlers for dealing with notification archives, Yagi Handlers for processing messages as they come off the queue, Winchester Pipeline Handlers for processing completed event streams, etc. Refer to the appropriate library to see the structure of that handler, as they are all a little different.
+            <li><a id='notification'>Notification</a> - A notification is a JSON data structure. It can contain nested data with all native JSON data types. A notification must have <code>event_type</code>, <code>message_id</code> and <code>timestamp</code> in the top level traits.
+            <li><a id='notigen'>Notigen</a> - Notigen is a python library that generates fake OpenStack Nova-style notifications. It simulates the common operations of Nova such as Create/Delete/Resize/Rebuild instance. 
+            <li><a id='notabene'>Notabene</a> - Notabene is a python library that consumes and publishes notifications to/from RabbitMQ queues. Within StackTach.v3 it's used for it's publishing capabilities. There is a Winchester Pipeline Handler that uses Notabene to publish new notification back to RabbitMQ. Notigen also uses Notabene to push simulated notifications to RabbitMQ. 
+            <li><a id='pipeline'>Pipeline</a> - A pipeline is a series of handlers that process data one after another. There are Yagi pipelines, Winchester pipelines and Shoebox pipelines. 
+            <li><a id='queues'>Queues</a> - A queue refers to a RabbitMQ queue. In RabbitMQ, messages are published to Exchanges, which are routed to queues until they are read by consumers.
+            <li><a id='shoebox'>Shoebox</a> - Shoebox is a python library for archiving complex JSON messages. Messages can be stored locally and tarballed (like logfiles) or packaged into binary archives. Archives can be exported to external stores, like HDFS or Swift, when they reach a certain size or age. 
+            <li><a id='trait'>Traits</a> - Traits are key-value pairs. For example, in <code>{'foo': 1, 'blah': 2}</code> foo and blah are traits. 
+            <li><a id='trigger'>Trigger</a> - A trigger is a rule that deems when a Winchester stream should be processed. There are triggers that can fire when a particular event is seen or after a period of stream inactivity.
+            <li><a id='yagi'>Yagi</a> - <a href='https://github.com/rackerlabs/yagi'>Yagi</a> is a python library for consuming messages from queues. It supports a handler-chain approach to processing these messages. A handler can do whatever it wants with consumed messages. Multiple yagi workers can be run to consume messages faster.
+          </ul>
+      <footer class="footer">
+        <p>&copy; Dark Secret Software Inc. 2014</p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>
+
