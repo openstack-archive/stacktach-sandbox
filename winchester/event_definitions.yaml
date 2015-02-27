@@ -1,3 +1,4 @@
+---
 - event_type: compute.instance.*
   traits: &instance_traits
     tenant_id:
@@ -56,12 +57,20 @@
       fields: payload.instance_type
     state:
       fields: payload.state
+    state_description:
+      fields: payload.state_description
+    bandwidth_in:
+      fields: payload.bandwidth.public.bw_in
+    bandwidth_out:
+      fields: payload.bandwidth.public.bw_out
     os_architecture:
       fields: payload.image_meta.'org.openstack__1__architecture'
     os_version:
       fields: payload.image_meta.'org.openstack__1__os_version'
     os_distro:
       fields: payload.image_meta.'org.openstack__1__os_distro'
+    rax_options:
+      fields: payload.image_meta.'com.rackspace__1__options'
     launched_at:
       type: datetime
       fields: payload.launched_at
@@ -70,6 +79,9 @@
       fields: 
         - payload.deleted_at
         - payload.terminated_at
+    display_name:
+      fields: payload.display_name
+
 - event_type: compute.instance.exists
   traits:
     <<: *instance_traits
