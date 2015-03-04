@@ -5,9 +5,13 @@ echo "StackTach dev env build script"
 PACKAGE=false
 TOX=false
 DEPLOY=false
+QUICK=false
 
-while getopts pdt opt; do
+while getopts qpdt opt; do
   case $opt in
+  q)
+      QUICK=true
+      ;;
   p)
       PACKAGE=true
       ;;
@@ -90,14 +94,17 @@ pip install librabbitmq
 # Needed by pyrax:
 pip install pbr
 
-for file in $SOURCE_DIR/*
-do
-    echo "----------------------- $file ------------------------------"
-    cd $file
-    rm -rf build dist
-    python setup.py install
-    cd ../..
-done
+if [[ "$QUICK" = false || "$PACKAGE" = true ]]
+then
+    for file in $SOURCE_DIR/*
+    do
+        echo "----------------------- $file ------------------------------"
+        cd $file
+        rm -rf build dist
+        python setup.py install -f
+        cd ../..
+    done
+fi
 
 # Hack(sandy): remove msgpack that conflicts with carrot
 pip uninstall -y msgpack-python

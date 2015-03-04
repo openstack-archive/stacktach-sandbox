@@ -54,6 +54,7 @@
         <img src="StackTach_160x70.png"/>
       </div>
 
+      <h2>Streams</h2>
       <div class="row marketing">
         <div class="col-lg-12">
           <h3>StackTach.v3 REST API</h3>
@@ -470,6 +471,220 @@ curl http://localhost:8000/v1/streams/1?detail=true
 
             </div>
           </div>
+
+          <div class="panel panel-info">
+            <div class="panel-heading">
+            <h3 class="panel-title">GET /v1/streams/count</h3>
+            </div>
+            <div class="panel-body">
+             <p>Retrieves the number of streams matching filter criteria.</p>
+             <p>Date filters use the <code>first_event</code> and <code>last_event</code> attributes on the stream for comparisons.</p>
+                 <p>Query filter parameters:</p>
+                 <ul>
+                   <li><b>older_than</b> - returns streams where <code>first_event</code> is older than supplied date (in ISO 8601 format). ie: 01-31-2015T13:30</li>
+                   <li><b>younger_than</b> - returns streams where <code>last_event</code> is  younger than supplied date (in ISO 8601 format). ie: 01-31-2015T13:30</li>
+                   <li><b>state</b> - returns streams where <code>state</code> is one of:</li>
+                   <ul>
+                     <li>active</li>
+                     <li>firing</li>
+                     <li>expiring</li>
+                     <li>error</li>
+                     <li>expire_error</li>
+                     <li>completed</li>
+                     <li>retry_fire</li>
+                     <li>retry_expire</li>
+                   </ul>
+                   <li><b>trigger_name</b> - returns streams with a specific <code>trigger_name</code></li>
+                   <li><b>distinguishing_traits</b> - returns streams with matching <code>distinguishing_traits</code>. Trait format is <code>trait_name:trait_value;trait_name:trait_value</code></li>
+                 </ul>
+
+               <h4>Sample return data</h4>
+               <pre class='pre-scrollable'>
+curl http://localhost:8000/v1/streams/count 
+
+[23]
+               </pre>
+            </div>
+          </div>
+
+          <div class="panel panel-info">
+            <div class="panel-heading">
+            <h3 class="panel-title">DELETE /v1/streams/&lt;stream_id&gt;</h3>
+            </div>
+            <div class="panel-body">
+             <p>Delete stream. Associated events are not deleted. 
+                This assumes <code>purge_completed_streams</code> is False
+                in your winchester config file.</p>
+             <ul>
+               <li><b>stream_id</b> - integer stream id</li>
+             </ul>
+
+               <h4>Sample return data</h4>
+               <pre class='pre-scrollable'>
+curl -x DELETE http://localhost:8000/v1/streams/123
+               </pre>
+            </div>
+          </div>
+
+          <div class="panel panel-info">
+            <div class="panel-heading">
+            <h3 class="panel-title">PUT /v1/streams/&lt;stream_id&gt;</h3>
+            </div>
+            <div class="panel-body">
+             <p>Reset a stream from the error state. Streams in <code>error</code> 
+             state go to <code>retry_fire</code> and <code>expire</code> goes to 
+             <code>retry_expire</code> state.</p>
+             <ul>
+               <li><b>stream_id</b> - integer stream id</li>
+             </ul>
+
+               <h4>Sample return data</h4>
+               <pre class='pre-scrollable'>
+curl -H "X-HTTP-Method-Override: PUT" -X POST http://localhost:8000/v1/streams/123
+               </pre>
+            </div>
+          </div>
+
+      <h2>Events</h2>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+        <h3 class="panel-title">GET /v1/events</h3>
+        </div>
+        <div class="panel-body">
+         <p>Retrieves events matching filter criteria.</p>
+         <p>Date filters use the <code>timestamp</code> attribute on the event for comparisons.</p>
+         <p>Query filter parameters:</p>
+         <ul>
+           <li><b>from_datetime</b> - returns events where <code>timestamp</code> is greater than supplied date (in ISO 8601 format). ie: 01-31-2015T13:30</li>
+           <li><b>to_datetime</b> - returns events where <code>timestamp</code> is less than supplied date (in ISO 8601 format). ie: 01-31-2015T13:30</li>
+           <li><b>event_name</b> - returns events with a specific <code>event_name</code></li>
+           <li><b>traits</b> - returns events with matching <code>traits</code>. Trait format is <code>trait_name:trait_value;trait_name:trait_value</code></li>
+           <li><b>mark</b> - returns events starting with event id greater than <code>mark</code></li>
+           <li><b>limit</b> - returns this many events maximum. Default: 200</li>
+         </ul>
+
+           <h4>Sample return data</h4>
+           <div class="alert alert-warning" role="alert"><b>Remember</b>: the traits you get back will depend on the distiller configuration you've established.</div>
+           <pre class='pre-scrollable'>
+curl "http://localhost:8000/v1/events?from_datetime=2015-03-04T22:25&to_datetime=2015-03-04T22:45"
+
+[
+    {
+        "_mark": "280",
+        "disk_gb": 20,
+        "display_name": "Instance_358720",
+        "ephemeral_gb": 0,
+        "event_type": "compute.instance.unrescue.start",
+        "instance_type": "512MB Standard Instance",
+        "launched_at": {
+            "__type__": "datetime",
+            "datetime": "2015-03-04T22:41:40.771441"
+        },
+        "memory_mb": 512,
+        "message_id": "4e38d6aa-8fd3-4f26-9293-b621735ea322",
+        "os_architecture": "x64",
+        "os_distro": "org.centos",
+        "os_version": "6.4",
+        "request_id": "req-a71cc334-926a-45cb-9ca2-3644f143d0ad",
+        "root_gb": 20,
+        "service": "publisher-15829",
+        "state": "rescued",
+        "state_description": "",
+        "tenant_id": "685053",
+        "timestamp": {
+            "__type__": "datetime",
+            "datetime": "2015-03-04T22:33:55.204441"
+        },
+        "user_id": "701363",
+        "vcpus": 1
+    },
+    {
+        "_mark": "27a",
+        "disk_gb": 20,
+        "display_name": "Instance_358720",
+        "ephemeral_gb": 0,
+        "event_type": "compute.instance.update",
+        "instance_flavor": "512MB Standard Instance",
+        "instance_flavor_id": 2,
+        "instance_id": "2fd4d09f-b685-4a80-9b6b-793da76db70e",
+        "instance_type": "512MB Standard Instance",
+        "launched_at": {
+            "__type__": "datetime",
+            "datetime": "2015-03-04T22:41:40.771441"
+        },
+        "memory_mb": 512,
+        "message_id": "b920513c-4dae-474c-b164-71e23349d131",
+        "os_architecture": "x64",
+        "os_distro": "org.centos",
+        "os_version": "6.4",
+        "request_id": "req-a71cc334-926a-45cb-9ca2-3644f143d0ad",
+        "root_gb": 20,
+        "service": "publisher-15829",
+        "state": "rescued",
+        "state_description": "unrescuing",
+        "tenant_id": "685053",
+        "timestamp": {
+            "__type__": "datetime",
+            "datetime": "2015-03-04T22:31:08.131441"
+        },
+        "user_id": "701363",
+        "vcpus": 1
+    }
+]
+
+           </pre>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+        <h3 class="panel-title">GET /v1/events/&lt;message_id&gt;</h3>
+        </div>
+        <div class="panel-body">
+         <p>Retrieves a single event given the <code>message_id</code></p>
+
+           <h4>Sample return data</h4>
+           <div class="alert alert-warning" role="alert"><b>Remember</b>: the traits you get back will depend on the distiller configuration you've established.</div>
+           <pre class='pre-scrollable'>
+curl "http://localhost:8000/v1/events/b920513c-4dae-474c-b164-71e23349d131"
+
+[
+    {
+        "disk_gb": 20,
+        "display_name": "Instance_358720",
+        "ephemeral_gb": 0,
+        "event_type": "compute.instance.update",
+        "instance_flavor": "512MB Standard Instance",
+        "instance_flavor_id": 2,
+        "instance_id": "2fd4d09f-b685-4a80-9b6b-793da76db70e",
+        "instance_type": "512MB Standard Instance",
+        "launched_at": {
+            "__type__": "datetime",
+            "datetime": "2015-03-04T22:41:40.771441"
+        },
+        "memory_mb": 512,
+        "message_id": "b920513c-4dae-474c-b164-71e23349d131",
+        "os_architecture": "x64",
+        "os_distro": "org.centos",
+        "os_version": "6.4",
+        "request_id": "req-a71cc334-926a-45cb-9ca2-3644f143d0ad",
+        "root_gb": 20,
+        "service": "publisher-15829",
+        "state": "rescued",
+        "state_description": "unrescuing",
+        "tenant_id": "685053",
+        "timestamp": {
+            "__type__": "datetime",
+            "datetime": "2015-03-04T22:31:08.131441"
+        },
+        "user_id": "701363",
+        "vcpus": 1
+    }
+]
+           </pre>
+        </div>
+      </div>
 
 
       <footer class="footer">
