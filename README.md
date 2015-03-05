@@ -9,18 +9,15 @@ Prerequisites:
 
     make sure you have a working python dev environment (2.7+ ideally)
         including virtualenv.
-    Install rabbitmq.
-    If using the oahu pipeline engine, install mongodb.
-    If using the winchester pipeline engine, install MySQL.
+    Install rabbitmq and mysql-server.
 
 TL;DR:
 
     handle the prerequisites above.
-    git clone https://github.com/StackTach/sandbox.git
+    git clone https://github.com/stackforge/stacktach-sandbox
     cd sandbox
-    If running winchester:
-        create a mysql database to use
-        set the database url appropriately in winchester.yaml
+    create a mysql database to use
+    set the database url appropriately in winchester.yaml
     ./build.sh
 
 Using Vagrant for fast local provisioning:
@@ -34,17 +31,12 @@ Using Vagrant for fast local provisioning:
     * cd stacktach-sandbox
     * ./build.sh
 
-    Note: 
-	This uses sandbox defaults including the use of the Winchester
-	pipeline.
-
 Tweaks:
 
 You can create a `local.sh` to override the defaults:
 
     SOURCE_DIR=git  # where the StackTach repos are cloned
     VENV_DIR=.venv  # name of the .venv
-    PIPELINE_ENGINE=oahu # Name of pipeline processing library to run.
 
 The `build.sh` script will create clone each of the StackTach projects
 into the `$SOURCE_DIR` directory (so you can work on them in a running env).
@@ -60,8 +52,11 @@ with the `yagi.conf` configuration file. This will read events from
 the rabbit queue and save them to local files. The working directory
 and archive directory for `shoebox` is specified in `yagi.conf`.
 
-The sandbox environment configures `shoebox` to upload archive files
-to Swift automatically. This requires you create a credentials file
+The sandbox environment configures `shoebox` to archive notifications
+to local .json files and tarball them up after the directory reaches
+20GB. 
+
+To have shoebox upload to Swift, you are required to create a credentials file
 in the `.../sandbox/` directory (like in
 `.../git/sandbox/etc/sample_rax_credentials.conf`) Call it
 `swift_credentials.conf` or alter the `shoebox.conf` file accordingly. If
