@@ -83,19 +83,20 @@
             <li>The pipeline-worker workers look for ready streams and does pipeline processing on them.</li>
             <li>The user can use the klugman cmdline tool to talk to the REST API to perform stream and event operations/queries</li>
           </ol>
-          <p>In order to do all this, there are a number of configation files required. Refer to the general documentation here or the particular libaries README file for configuration details. The main configuration files include:</p>
+          <p>In order to do all this, there are a number of configation files required. Refer to the general documentation here or the particular libaries README file for configuration details. Of course, the names could be anything, these are just the onces we've settled on. The main configuration files include:</p>
           <ul>
             <li><b>yagi.conf</b> - the configuration file that tells yagi how to connect to the quque and what to do with the notifications consumed.</li>
             <li><b>winchester.yaml</b> - the master configuration file for winchester. It specifies the pipeline configuration to use, the stream definitions and the triggering rules.</p>
             <li><b>triggers.yaml</b> - the detailed stream definitions and pipeline triggering rules</b></li>
             <li><b>pipelines.yaml</b> - the pipeline handler definitions</p>
+            <li><b>event_definitions.yaml</b> - how the distiller should map notifications to events. Which traits to select or transform.
           </ul>
 
           <p>Where each of these files is used is illustrated in the diagram below:</p>
           
           <img src='sandbox-2.gif' class="img-rounded"/>
 
-          <p>This will get you going for a minimal StackTach.v3 installation. Especially handy for dev environments. Read up on the "build" command, below, for instructions on  For larger deployments, you may want to look at how we deploy StackTach.v3 within Rackspace Public Cloud, below:</p> 
+          <p>This will get you going for a minimal StackTach.v3 installation. It's especially handy for dev environments as well as a way of just playing around. For low-volume/non-mission critical evironments, this would be appropriate. Read up on the "build" command, below, for instructions on launching the sandbox environment. For larger deployments, you may want to look at how we deploy StackTach.v3 within Rackspace Public Cloud, below:</p> 
 
           <h3>How StackTach.v3 is deployed at Rackspace</h3>
           <p>For Rackspace Public Cloud, OpenStack is deployed in many different regions and each region is comprised of many cells.</p>
