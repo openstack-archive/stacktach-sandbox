@@ -11,7 +11,7 @@ cells:
   - cell: cell-1
     rabbit_host: localhost
     rabbit_user: guest
-    rabbit_password: password
+    rabbit_password: guest
     rabbit_port: 5672
     rabbit_vhost: /
     rabbit_exchange: nova
@@ -21,7 +21,7 @@ cells:
   - cell: cell-2
     rabbit_host: localhost
     rabbit_user: guest
-    rabbit_password: password
+    rabbit_password: guest
     rabbit_port: 5672
     rabbit_vhost: /
     rabbit_exchange: nova

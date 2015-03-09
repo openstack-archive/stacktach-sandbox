@@ -108,6 +108,35 @@
           <h3>The Ansible deployment scripts</h3>
           <p>In the <a href='https://github.com/stackforge/stacktach-sandbox/tree/master/ansible'>StackTach Sandbox</a> repo, there is an ansible directory that contains roles for the workers, the API nodes and the database. There is a fourth "common" role that is used by the other roles.</p>
           <p>These scripts assume a multi-cell deployment where there is one StackTach.v3 deployment per region (each with it's own API servers and database). If you are not running with cells, pretend it's a single cell.</p>
+
+          <p>The servers are deployed in the following way:</p>
+          <pre>
+# Everything is installed and deployed as:          
+user: stv3
+group: stv3
+
+Code:
+/opt/stv3
+
+Daemons:
+/etc/init.d/
+
+Config:
+/etc/stv3
+
+Logs:
+/var/log/stv3
+
+PIDs:
+/var/run/stv3/
+
+# To launch a service manually (logging in a different user)
+sudo -s
+su stv3
+cd /opt/stv3/bin
+. ./activate
+./yagi-event --config /etc/stv3/yagi-cell-1.conf
+          </pre>
           <h3>The Build script</h3>
           <p>The <a href='https://github.com/stackforge/stacktach-sandbox'>StackTach Sandbox</a> repo is the umbrella repo for all the other StackTach modules. It:</p>
           <ul>

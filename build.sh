@@ -79,6 +79,7 @@ then
         set +e
         cd ..
     done
+    exit
 fi
 
 cd ..
