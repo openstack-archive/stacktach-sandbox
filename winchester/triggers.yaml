@@ -15,6 +15,9 @@
     - rebuild_instance
     - compute.instance.*
     - "!compute.instance.exists"
+    - "!compute.instance.exists.failed"
+    - "!compute.instance.exists.warnings"
+    - "!compute.instance.exists.verified"
   - event_type: compute.instance.exists
     map_distinguished_by:
       timestamp: audit_period_beginning
