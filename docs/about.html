@@ -97,7 +97,10 @@
              <p>In order to get notifications from OpenStack, you'll need to put the following lines in your service configuration files.</p>
 
 <pre>
---notification_driver=nova.openstack.common.notifier.rpc_notifier
+# OpenStack deployments before Kilo should use the old-style:
+#--notification_driver=nova.openstack.common.notifier.rpc_notifier
+# Kilo and beyond use the "messaging" entry-point:
+--notification_driver=messaging
 --notification_topics=monitor
 --notify_on_state_change=vm_and_task_state
 --notify_on_any_change=True
