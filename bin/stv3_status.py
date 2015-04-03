@@ -41,6 +41,7 @@ def ssh(host, cmds, user, password, port):
         return None
     outputs = []
     for cmd in cmds:
+        print "Running:", cmd
         s.sendline(cmd)
         s.prompt()
         outputs.append(s.before)
@@ -72,11 +73,16 @@ vhost = config.get('vhost', '/')
 lines = config.get('tail_lines', '100')
 queue_prefixes = config.get('queue_prefixes', ['monitor'])
 
+num_cells = len(cell_names)
 for worker in worker_hostnames:
     commands = ["ps auxww | grep -E 'yagi-event|pipeline_worker'"]
     for cell in cell_names:
         commands.append("tail --lines %s /var/log/stv3/yagi-%s.log" %
                             (lines, cell))
+    commands.append("tail --lines %s /var/log/stv3/stv3.log" % lines)
+    archive_directories = ["/etc/stv3/%s/events" % cell for cell in cell_names]
+    commands.append("du -ch --time %s /etc/stv3/tarballs" % " ".join(archive_directories))
+    commands.append("ls -lah /etc/stv3/tarballs")
 
     print "--- worker: %s" % (worker, )
     ret = ssh(worker, commands, username, password, port)
@@ -86,6 +92,13 @@ for worker in worker_hostnames:
         print "Writing %s-yagi-%s.log" % (worker, cell)
         with open("%s-yagi-%s.log" % (worker, cell), "w") as o:
             o.write(ret[i+1])
+
+    print "Writing pipeline worker: %s-stv3.log" % worker
+    with open("%s-stv3.log" % worker, "w") as o:
+        o.write(ret[-3])
+
+    print ret[-2]
+    print ret[-1]
 
 for api in api_hostnames:
     commands = ["ps auxww | grep gunicorn",

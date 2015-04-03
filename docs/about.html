@@ -441,6 +441,75 @@ winchester.debugging[INFO line: 161] ----------------------------
       <p>The winchester.debugging lines will tell you how fire and matching criteria is progressing. In this case, it's saying that 397 firing criteria checks were made and only 2 passed. If your debug level is 2, you will get breakdown of the reasons the checks failed. You can use this information to review your trigger definitions and see if something could be wrong. Additionally, the matching criteria results are detailed. In this case we see that, of 207 events, 200 were acceptable. The details on the 7 rejected are listed below. Finally, some "counters" are supplied on the stream processing in general. 58 new streams were created on this pass, 100 new events added to various "test_trigger" streams, and 1 stream is ready to fire.<p>
       <p>By selectively turning on per-stream debugging, you can quickly find processing problems and ignore a lot of log noise.</p>
 
+      <table class="table table-bordered">
+          <thead><tr><th>Message</th><th>Explanation</th></tr></thead>
+          <tr><td><em>Pre-commit successful</em></td>
+              <td>The handle_events() call was successful for this pipeline. +1 per pipeline, not per handler.</td></tr>
+          <tr><td><em>Pipeline error</em></td>
+              <td>A handle_events() call failed. Details in log files.</td></tr>
+          <tr><td><em>Commit successful</em></td>
+              <td>The commit() calls for the pipeline succeeded. +1 per handler.</td></tr>
+          <tr><td><em>Commit error</em></td>
+              <td>A commit() call for the pipeline failed. +1 per handler.</td></tr>
+          <tr><td><em>Rollback successful</em></td>
+              <td>The rollback() calls for the pipeline succeeded. +1 per handler.</td></tr>
+          <tr><td><em>Rollback failed</em></td>
+              <td>A rollback() calls for the pipeline succeeded. +1 per handler.</td></tr>
+          <tr><td><em>Locked</em></td>
+              <td>Attempted to fire/expire a stream that was locked in the db.</td></tr>
+          <tr><td><em>Unknown trigger def '[trigger]'</em></td>
+              <td>Could not find the trigger definition in order to fire/expire this stream.</td></tr>
+          <tr><td><em>Unknown pipeline '[pipeline]'</em></td>
+              <td>Could not find the fire/expire pipeline for this stream.</td></tr>
+          <tr><td><em>No fire pipeline for '[stream name]'</em></td>
+              <td>A fire pipeline was not defined for this stream.</td></tr>
+          <tr><td><em>No expire pipeline for '[stream name]'</em></td>
+              <td>An expire pipeline was not defined for this stream.</td></tr>
+          <tr><td><em>Streams fired</em></td>
+              <td>The number of streams fired during this cycle.</td></tr>
+          <tr><td><em>Streams expired</em></td>
+              <td>The number of streams expired during this cycle.</td></tr>
+          <tr><td><em>New stream</em></td>
+              <td>New streams created for this trigger definition during this cycle.</td></tr>
+          <tr><td><em>Ready to fire</em></td>
+              <td>Number of streams for this trigger definition ready to fire this cycle.</td></tr>
+          <tr><td><em>Added events</em></td>
+              <td>Number of events added to this trigger definition during this cycle.</td></tr>
+          <tr><td><em>Match failed: not '[trait name]'</em></td>
+              <td>Event did not match this trigger def because it was missing a needed distinguishing trait.</td></tr>
+          <tr><td><em>Match: Passed</em></td>
+              <td>Some criteria matched for adding this event to a stream.</td></tr>
+          <tr><td><em>Match: No matching criteria</em></td>
+              <td>No criteria matched to add this event to a stream.</td></tr>
+          <tr><td><em>Fire: Not enough matching criteria</em></td>
+              <td>Number of fire criteria matches &lt; criteria number (default 1).</td></tr>
+          <tr><td><em>Fire: Passed</em></td>
+              <td>Enough criteria matched for adding this stream to fire.</td></tr>
+          <tr><td><em>Match/Fire: not [trait name]</em></td>
+              <td>Criteria match failed because named trait not present in event.</td></tr>
+          <tr><td><em>Match/Fire: == failed</em></td>
+              <td>Criteria match failed because named trait value != expected.</td></tr>
+          <tr><td><em>Match/Fire: &gt; failed</em></td>
+              <td>Criteria match failed because named trait value &lt;= expected.</td></tr>
+          <tr><td><em>Match/Fire: &lt; failed</em></td>
+              <td>Criteria match failed because named trait value &gt;= expected.</td></tr>
+          <tr><td><em>Match/Fire: Criterion match() fall-thru</em></td>
+              <td>Criteria match failed because of undefined comparison operation.</td></tr>
+          <tr><td><em>Match/Fire: Time: not '[trait name]'</em></td>
+              <td>Time criteria match failed because trait not present in event.</td></tr>
+          <tr><td><em>Match/Fire: Time: no referenced trait</em></td>
+              <td>Time criteria match failed because time expression bad.</td></tr>
+          <tr><td><em>Match/Fire: Time: not in timerange</em></td>
+              <td>Time criteria match failed because time value was not in required range.</td></tr>
+          <tr><td><em>Match/Fire: Wrong event type</em></td>
+              <td>Criteria match failed because event is wrong type.</td></tr>
+          <tr><td><em>Match/Fire: Time: No timestamp trait</em></td>
+              <td>Criteria match failed because referenced timestamp trait doesn't exist.</td></tr>
+          <tr><td><em>Match/Fire: Time: Not time yet</em></td>
+              <td>Criteria match failed because 'timestamp' not in defined time ranges.</td></tr>
+      </table>
+
+
       <h3><a id='pipeline'>Winchester Pipeline Handlers</a></h3>
       <p>Winchester comes with a set of stock pipeline handlers for the
          most popular OpenStack operations.</p>
