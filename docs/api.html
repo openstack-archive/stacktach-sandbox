@@ -67,8 +67,8 @@
              <p>Date filters use the <code>first_event</code> and <code>last_event</code> attributes on the stream for comparisons.</p>
              <p>Query filter parameters:</p>
              <ul>
-               <li><b>older_than</b> - returns streams where <code>first_event</code> is older than supplied date (in ISO 8601 format). ie: 01-31-2015T13:30</li>
-               <li><b>younger_than</b> - returns streams where <code>last_event</code> is  younger than supplied date (in ISO 8601 format). ie: 01-31-2015T13:30</li>
+               <li><b>older_than</b> - returns streams where <code>first_event</code> is older than supplied date (in ISO 8601 format). ie: 2015-02-28T13:30</li>
+               <li><b>younger_than</b> - returns streams where <code>last_event</code> is  younger than supplied date (in ISO 8601 format). ie: 2015-02-28T13:30</li>
                <li><b>state</b> - returns streams where <code>state</code> is one of:</li>
                <ul>
                  <li>active</li>
@@ -481,8 +481,8 @@ curl http://localhost:8000/v1/streams/1?detail=true
              <p>Date filters use the <code>first_event</code> and <code>last_event</code> attributes on the stream for comparisons.</p>
                  <p>Query filter parameters:</p>
                  <ul>
-                   <li><b>older_than</b> - returns streams where <code>first_event</code> is older than supplied date (in ISO 8601 format). ie: 01-31-2015T13:30</li>
-                   <li><b>younger_than</b> - returns streams where <code>last_event</code> is  younger than supplied date (in ISO 8601 format). ie: 01-31-2015T13:30</li>
+                   <li><b>older_than</b> - returns streams where <code>first_event</code> is older than supplied date (in ISO 8601 format). ie: 2015-02-28T13:30</li>
+                   <li><b>younger_than</b> - returns streams where <code>last_event</code> is  younger than supplied date (in ISO 8601 format). ie: 2015-02-28T13:30</li>
                    <li><b>state</b> - returns streams where <code>state</code> is one of:</li>
                    <ul>
                      <li>active</li>
@@ -556,8 +556,8 @@ curl -H "X-HTTP-Method-Override: PUT" -X POST http://localhost:8000/v1/streams/1
          <p>Date filters use the <code>timestamp</code> attribute on the event for comparisons.</p>
          <p>Query filter parameters:</p>
          <ul>
-           <li><b>from_datetime</b> - returns events where <code>timestamp</code> is greater than supplied date (in ISO 8601 format). ie: 01-31-2015T13:30</li>
-           <li><b>to_datetime</b> - returns events where <code>timestamp</code> is less than supplied date (in ISO 8601 format). ie: 01-31-2015T13:30</li>
+           <li><b>from_datetime</b> - returns events where <code>timestamp</code> is greater than supplied date (in ISO 8601 format). ie: 2015-02-28T13:30</li>
+           <li><b>to_datetime</b> - returns events where <code>timestamp</code> is less than supplied date (in ISO 8601 format). ie: 2015-02-28T13:30</li>
            <li><b>event_name</b> - returns events with a specific <code>event_name</code></li>
            <li><b>traits</b> - returns events with matching <code>traits</code>. Trait format is <code>trait_name:trait_value;trait_name:trait_value</code></li>
            <li><b>mark</b> - returns events starting with event id greater than <code>mark</code></li>
