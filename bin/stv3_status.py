@@ -72,6 +72,7 @@ port = int(config.get('ssh_port', 22))
 vhost = config.get('vhost', '/')
 lines = config.get('tail_lines', '100')
 queue_prefixes = config.get('queue_prefixes', ['monitor'])
+num_pipeline_workers = config.get('num_pipeline_workers', 2)
 
 num_cells = len(cell_names)
 for worker in worker_hostnames:
@@ -79,9 +80,14 @@ for worker in worker_hostnames:
     for cell in cell_names:
         commands.append("tail --lines %s /var/log/stv3/yagi-%s.log" %
                             (lines, cell))
-    commands.append("tail --lines %s /var/log/stv3/stv3.log" % lines)
-    archive_directories = ["/etc/stv3/%s/events" % cell for cell in cell_names]
-    commands.append("du -ch --time %s /etc/stv3/tarballs" % " ".join(archive_directories))
+    for x in range(num_pipeline_workers):
+        commands.append(
+            "tail --lines %s /var/log/stv3/pipeline_worker_%d.log"
+                % (lines, x+1))
+    archive_directories = ["/etc/stv3/%s/events"
+                                % cell for cell in cell_names]
+    commands.append("du -ch --time %s /etc/stv3/tarballs"
+                        % " ".join(archive_directories))
     commands.append("ls -lah /etc/stv3/tarballs")
 
     print "--- worker: %s" % (worker, )
@@ -93,9 +99,12 @@ for worker in worker_hostnames:
         with open("%s-yagi-%s.log" % (worker, cell), "w") as o:
             o.write(ret[i+1])
 
-    print "Writing pipeline worker: %s-stv3.log" % worker
-    with open("%s-stv3.log" % worker, "w") as o:
-        o.write(ret[-3])
+    index = 2 + num_pipeline_workers
+    for x in range(num_pipeline_workers):
+        print "Writing pipeline worker: %s-pipeline_worker_%d.log" \
+                % (worker, x+1)
+        with open("%s-pipeline_worker_%d.log" % (worker, x+1), "w") as o:
+            o.write(ret[-index + x])
 
     print ret[-2]
     print ret[-1]

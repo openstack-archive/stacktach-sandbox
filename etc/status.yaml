@@ -9,6 +9,7 @@ password: mypassword
 
 ssh_port: 22
 tail_lines: 100
+num_pipeline_workers: 2
 
 worker_hostnames:
     - worker1.example.com
