@@ -15,13 +15,13 @@ worker_hostnames:
     - worker1.example.com
     - worker2.example.com
 
-# Which vhost is your rabbit using?
-vhost: nova
-
 rabbit_hostnames:
-    - rabbit.global.example.com
-    - rabbit.cell1.example.com
-    - rabbit.cell2.example.com
+    - host: rabbit.global.example.com
+      vhost: /
+    - host: rabbit.cell1.example.com
+      vhost: /
+    - host: rabbit.cell2.example.com
+      vhost: /
 
 # However you have your OpenStack service configured.
 # Could be multiple queues to watch.

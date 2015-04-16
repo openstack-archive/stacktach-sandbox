@@ -69,7 +69,6 @@ worker_hostnames = config['worker_hostnames']
 rabbit_hostnames = config['rabbit_hostnames']
 api_hostnames = config['api_hostnames']
 port = int(config.get('ssh_port', 22))
-vhost = config.get('vhost', '/')
 lines = config.get('tail_lines', '100')
 queue_prefixes = config.get('queue_prefixes', ['monitor'])
 num_pipeline_workers = config.get('num_pipeline_workers', 2)
@@ -122,9 +121,11 @@ for api in api_hostnames:
         o.write(ret[1])
 
 prefixes = '|'.join(queue_prefixes)
-for rabbit in rabbit_hostnames:
-    print "--- RabbitMQ: %s vhost: %s" % (rabbit, vhost)
-    ret = ssh(rabbit, ["sudo rabbitmqctl list_queues -p %s | grep -E '%s'" %
+for rabbit_conf in rabbit_hostnames:
+    host = rabbit_conf['host']
+    vhost = rabbit_conf.get('vhost', '/')
+    print "--- RabbitMQ: %s vhost: %s" % (host, vhost)
+    ret = ssh(host, ["sudo rabbitmqctl list_queues -p %s | grep -E '%s'" %
                             (vhost, prefixes)],
                        username, password, port)
     for r in ret:

@@ -110,6 +110,10 @@ fi
 # Hack(sandy): remove msgpack that conflicts with carrot
 pip uninstall -y msgpack-python
 
+pip freeze > pip_freeze_versions.txt
+
+cp pip_freeze_versions.txt $VENV_DIR
+
 (cat yagi.conf.$PIPELINE_ENGINE ; cat yagi.conf.common ) > yagi.conf
 
 if [ $PIPELINE_ENGINE == "winchester" ]
