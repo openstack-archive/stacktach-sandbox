@@ -1,0 +1,8 @@
+Verified+2: Jenkins
+Code-Review+2: Levi Blackstone <levi.blackstone@rackspace.com>
+Workflow+1: Levi Blackstone <levi.blackstone@rackspace.com>
+Submitted-by: Jenkins
+Submitted-at: Mon, 27 Apr 2015 19:15:46 +0000
+Reviewed-on: https://review.openstack.org/177930
+Project: stackforge/stacktach-sandbox
+Branch: refs/heads/master
