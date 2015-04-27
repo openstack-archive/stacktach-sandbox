@@ -7,7 +7,7 @@ hardstatus alwayslastline '%{= .} %-Lw%{= .}%> %n%f %t*%{= .}%+Lw%< %-=%{g}(%{d}
 screen -t quincy bash
 stuff "cd git/stacktach-quincy/quincy; gunicorn --log-file=- 'quincy.api:get_api(config_location=\"../../../quincy.conf\")'\r"
 screen -t bash bash
-stuff "klugman streams\r"
+stuff "klugman http://127.0.0.1:8000 streams\r"
 screen -t yagi1 bash
 stuff "yagi-event --config yagi.conf\r"
 screen -t yagi2 bash
