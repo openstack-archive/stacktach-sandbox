@@ -48,7 +48,7 @@ quincy==0.3.dev24
 redis==2.10.3
 repoze.lru==0.6
 requests==2.6.2
-shoebox==0.7.dev52
+shoebox==0.7.dev53
 simport==0.2.dev16
 six==1.9.0
 stackdistiller==0.11
