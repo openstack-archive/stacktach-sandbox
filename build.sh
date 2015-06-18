@@ -102,7 +102,7 @@ then
         echo "----------------------- $file ------------------------------"
         cd $file
         rm -rf build dist
-        python setup.py install -f
+        pip install --force-reinstall -e .
         cd ../..
     done
 fi
