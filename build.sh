@@ -102,7 +102,7 @@ then
         echo "----------------------- $file ------------------------------"
         cd $file
         rm -rf build dist
-        pip install --force-reinstall -e .
+        pip install --force-reinstall .
         cd ../..
     done
 fi
