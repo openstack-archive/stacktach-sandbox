@@ -95,6 +95,14 @@ pip install librabbitmq
 # Needed by pyrax:
 pip install pbr
 
+
+if [[ "$PACKAGE" = true ]]
+then
+    BUILDFLAGS=""
+else
+    BUILDFLAGS="-e"
+fi
+
 if [[ "$QUICK" = false || "$PACKAGE" = true ]]
 then
     for file in $SOURCE_DIR/*
@@ -102,7 +110,7 @@ then
         echo "----------------------- $file ------------------------------"
         cd $file
         rm -rf build dist
-        pip install --force-reinstall -e .
+        pip install --force-reinstall $BUILDFLAGS .
         cd ../..
     done
 fi
