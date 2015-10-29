@@ -4,5 +4,5 @@
 Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/trusty64"
   config.vm.provision "shell", path: "bootstrap.sh"
-  config.vm.provision "shell", inline: "git clone https://github.com/stackforge/stacktach-sandbox.git", privileged: false
+  config.vm.provision "shell", inline: "git clone https://github.com/openstack/stacktach-sandbox.git", privileged: false
 end

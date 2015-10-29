@@ -152,7 +152,7 @@ max_messages = 100
 </pre>
 
           <p>The important part of this configuration is the <code>[event_worker]</code> section. This says we want to use the RabbitMQ data source. The RabbitMQ connectivity information is stored in the <code>[rabbit_broker]</code> section. The name of each RabbitMQ queue to consume from is specified in the <code>[consumers]</code> section. For every queue you define there, you will need a <code>[consumer:&lt;queue_name&gt;]</code> section. This last section is where there real magic happens. Beyond defining the exchange, routing_key and durability characteristics, it defines the chain of <code>Yagi Handlers</code> that will run on every notification that gets consumed. </p>
-          <p>You can write your own Yagi handlers if you like, but there are a number that ship with StackTach.v3 to do some interesting things. The most important of these is the <a href='https://github.com/stackforge/stacktach-winchester/blob/4875e419a66974e416dbe3b43ed286017bad1ec4/winchester/yagi_handler.py#L18'>winchester.yagi_handler:WinchesterHandler</a>. This handler is your entry point into StackTach.v3 stream processing. But first, we need to convert those messy notifications into events ...</p>
+          <p>You can write your own Yagi handlers if you like, but there are a number that ship with StackTach.v3 to do some interesting things. The most important of these is the <a href='https://github.com/openstack/stacktach-winchester/blob/4875e419a66974e416dbe3b43ed286017bad1ec4/winchester/yagi_handler.py#L18'>winchester.yagi_handler:WinchesterHandler</a>. This handler is your entry point into StackTach.v3 stream processing. But first, we need to convert those messy notifications into events ...</p>
           <h3><a id='distill'>Distilling Notifications to Events</a></h3>
           <p>Now we have notifications coming into Winchester. But, as we hinted at above, we need to take the larger notification and <i>distill</i> it down into a, more manageable, event. The stack-distiller module makes this happen. Within StackTach.v3, this is part of <code>winchester.yagi_handler:WinchesterHandler</code>.</p>
           <p>A notification is a large, nested JSON data structure. But we don't need all of that data for stream processing. In fact, we generally only require a few <a href='glossary.html#trait'>Traits</a> from the notification. That's what distilling does. It pulls out the important traits, scrubs the data and uses that. Distillations are done via the distillation configuration file (specified in winchester.conf). </p>
@@ -231,7 +231,7 @@ max_messages = 100
         - exception.kwargs.uuid
         - instance.uuid
 </pre>
-          <p>For details on the distiller configuration grammar, see the associated <a href='https://github.com/stackforge/stacktach-stackdistiller/blob/master/doc/event_definitions_config.md'>docs</a>. Note that the distiller config file is in YAML format.</p>
+          <p>For details on the distiller configuration grammar, see the associated <a href='https://github.com/openstack/stacktach-stackdistiller/blob/master/doc/event_definitions_config.md'>docs</a>. Note that the distiller config file is in YAML format.</p>
 
           <p>When processed, the notification would be converted into an event that looks like this:</p>
 <span class="label label-default">A sample event</span>

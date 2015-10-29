@@ -65,7 +65,7 @@
             <li>a yagi-event process to read the notifications and get them into winchester</li>
             <li>a winchester pipeline-worker process to do processing on ready streams</li>
           </ul>
-          <p>If you have a machine with MySQL and RabbitMQ on it, the <a href='https://github.com/stackforge/stacktach-sandbox' target='_blank'>stacktach-sandbox</a> repo does the rest. The sandbox will set up a python virtual environment, install all the required components and run everything under a <a href="http://www.rackaid.com/blog/linux-screen-tutorial-and-how-to/" target="_blank">screen</a> session.</p>
+          <p>If you have a machine with MySQL and RabbitMQ on it, the <a href='https://github.com/openstack/stacktach-sandbox' target='_blank'>stacktach-sandbox</a> repo does the rest. The sandbox will set up a python virtual environment, install all the required components and run everything under a <a href="http://www.rackaid.com/blog/linux-screen-tutorial-and-how-to/" target="_blank">screen</a> session.</p>
           <img src='sandbox-1.gif' class="img-rounded"/>
           <p>The sandbox sets up seven screen pages that contain:</p>
           <ol type="a">
@@ -106,7 +106,7 @@
           <p>In this deployment scenario, we have a set of "worker" boxes that run the <code>yagi-event</code> workers (to consume notifications from RabbitMQ). We run one yagi-event worker per OpenStack cell. We also run the Winchester pipeline-workers on this box. The pipeline-worker manages pipeline processing for ready streams. We run as many pipeline-workers as needed to keep each core busy. Both the yagi-event and pipeline-worker processes are single threaded so we spawn more to keep the host busy. We add more servers like these to handle the load in the pipeline processing and/or the source queues.</p>
           <p>Additionally, we have servers for the API nodes and the MySQL database. Load balancing the API servers and making MySQL highly available is left to the deployer.</p>
           <h3>The Ansible deployment scripts</h3>
-          <p>In the <a href='https://github.com/stackforge/stacktach-sandbox/tree/master/ansible'>StackTach Sandbox</a> repo, there is an ansible directory that contains roles for the workers, the API nodes and the database. There is a fourth "common" role that is used by the other roles.</p>
+          <p>In the <a href='https://github.com/openstack/stacktach-sandbox/tree/master/ansible'>StackTach Sandbox</a> repo, there is an ansible directory that contains roles for the workers, the API nodes and the database. There is a fourth "common" role that is used by the other roles.</p>
           <p>These scripts assume a multi-cell deployment where there is one StackTach.v3 deployment per region (each with it's own API servers and database). If you are not running with cells, pretend it's a single cell.</p>
 
           <p>The servers are deployed in the following way:</p>
@@ -138,7 +138,7 @@ cd /opt/stv3/bin
 ./yagi-event --config /etc/stv3/yagi-cell-1.conf
           </pre>
           <h3>The Build script</h3>
-          <p>The <a href='https://github.com/stackforge/stacktach-sandbox'>StackTach Sandbox</a> repo is the umbrella repo for all the other StackTach modules. It:</p>
+          <p>The <a href='https://github.com/openstack/stacktach-sandbox'>StackTach Sandbox</a> repo is the umbrella repo for all the other StackTach modules. It:</p>
           <ul>
             <li>can create a local dev environment for anyone wanting to contribute to StackTach or just play around with it
             <li>can package StackTach into a python virtual environment and tarball it up for larger scale deployment. The ansible scripts use this tarball approach.

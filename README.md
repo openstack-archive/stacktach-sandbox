@@ -14,7 +14,7 @@ Prerequisites:
 TL;DR:
 
     handle the prerequisites above.
-    git clone https://github.com/stackforge/stacktach-sandbox
+    git clone https://github.com/openstack/stacktach-sandbox
     cd sandbox
     create a mysql database to use
     set the database url appropriately in winchester.yaml
