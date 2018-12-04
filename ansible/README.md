@@ -33,4 +33,4 @@ The init.d files handle the .pid file creation and running as stv3 user.
 While yagi-events and pipeline-worker are capable to running daemonized, we don't use that code.
 Instead, we let the init.d scripts handle the backgrounding and process management.
 
-The connection from the host machine to the target machine has to have a secure account already created for anisble to run. Currently it assumes an account called `stacktach` and it has root capabilities. When the daemons run, they run as `stv3` ... which is just a service account.
+The connection from the host machine to the target machine has to have a secure account already created for ansible to run. Currently it assumes an account called `stacktach` and it has root capabilities. When the daemons run, they run as `stv3` ... which is just a service account.
