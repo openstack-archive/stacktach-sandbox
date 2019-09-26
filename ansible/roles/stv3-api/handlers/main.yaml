@@ -1,2 +1,0 @@
-- name: restart stv3-api
-  service: name=stv3-api state=restarted 
